@@ -1,0 +1,21 @@
+# Diese Datei aktiviert und steuert das automatisierte Deployment des Maven-Projektes, in dem sie sich befindet. Das Projekt wird dadurch bei jedem Push von GitLab CI/CD automatisch gebaut und in einem Kubernetes-Cluster als Docker-Container deployt. Die gesamte Logik dafür steckt an zentraler Stelle in einem Script, das über den "include"-Befehl ganz unten eingebunden wird.
+
+# Wichtige Anforderungen für einen erfolgreichen Pipeline-Durchlauf:
+#  a) Die Maven-Datei pom.xml muss sich auf der obersten Ebene dieses Projektes befinden!
+#  b) Um die Messung der Testabdeckung zu aktivieren, ergänzen Sie in der Datei pom.xml den Eintrag für JaCoCo wie im Entwicklerhandbuch erläutert.
+#  c) Weiterhin muss sich eine Datei namens postman_collection.json auf der obersten Ebene befinden, die mindestens einen Testfall für Postman enthält.
+#  d) Ein Deployment mit der CI-CD-Pipeline gilt nur als erfolgreich, wenn die Anwendung unter nachfolgend hinterlegtem HEALTHCHECK_PATH mit dem Statuscode 200 antwortet. Dafür muss entweder die Dependency 'spring-boot-starter-actuator' eingebunden werden oder der nachfolgende HEALTHCHECK_PATH angepasst werden:
+  
+variables:
+  HEALTHCHECK_PATH: "/actuator/health"
+
+  #Nur falls der Service nach dem Deployment per HTTPS angesprochen werden soll, müssen die nachfolgenden Zeilen wieder einkommentiert werden!
+  #HTTPS: "https"
+  #HTTPS_SCHEME: "HTTPS"
+  #sslPaththrough: "true"
+  #tlsEnabled: "true"
+
+include:
+  - project: "sweng_templates/sweng_yml-template"
+    ref: master
+    file: "sweng_ci_pipeline_2021.yml"
