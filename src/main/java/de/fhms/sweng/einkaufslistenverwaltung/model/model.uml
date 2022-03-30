@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>de.fhms.sweng.einkaufslistenverwaltung.model</OriginalElement>
+  <nodes>
+    <node x="342.875" y="385.5">de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingListId</node>
+    <node x="193.875" y="636.0">de.fhms.sweng.einkaufslistenverwaltung.model.User</node>
+    <node x="165.875" y="510.0">de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList</node>
+    <node x="72.375" y="192.0">de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct</node>
+    <node x="10.875" y="340.0">de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList</node>
+    <node x="191.0" y="56.5">de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProductId</node>
+    <node x="0.0" y="0.0">de.fhms.sweng.einkaufslistenverwaltung.model.Product</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.Product" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" relationship="TO_MANY">
+      <point x="-42.75" y="71.0" />
+      <point x="42.75" y="172.0" />
+      <point x="119.625" y="172.0" />
+      <point x="-47.25" y="-49.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.User" target="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" relationship="DEPENDENCY">
+      <point x="33.25" y="-60.0" />
+      <point x="293.625" y="611.0" />
+      <point x="307.625" y="611.0" />
+      <point x="47.25" y="38.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.User" relationship="DEPENDENCY">
+      <point x="47.25000000000001" y="38.0" />
+      <point x="307.625" y="611.0" />
+      <point x="293.625" y="611.0" />
+      <point x="33.25000000000001" y="-60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" relationship="TO_ONE">
+      <point x="47.25" y="49.0" />
+      <point x="214.125" y="315.0" />
+      <point x="244.875" y="315.0" />
+      <point x="78.0" y="-60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" target="de.fhms.sweng.einkaufslistenverwaltung.model.Product" relationship="TO_ONE">
+      <point x="-47.25" y="-49.0" />
+      <point x="119.625" y="172.0" />
+      <point x="42.75" y="172.0" />
+      <point x="-42.75" y="71.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.Product" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" relationship="DEPENDENCY">
+      <point x="42.75" y="71.0" />
+      <point x="128.25" y="162.0" />
+      <point x="171.875" y="162.0" />
+      <point x="171.875" y="172.0" />
+      <point x="214.125" y="172.0" />
+      <point x="47.25" y="-49.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" target="de.fhms.sweng.einkaufslistenverwaltung.model.Product" relationship="DEPENDENCY">
+      <point x="47.25" y="-49.0" />
+      <point x="214.125" y="172.0" />
+      <point x="171.875" y="172.0" />
+      <point x="171.875" y="162.0" />
+      <point x="128.25" y="162.0" />
+      <point x="42.75" y="71.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.User" target="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" relationship="TO_MANY">
+      <point x="-33.25" y="-60.0" />
+      <point x="227.125" y="611.0" />
+      <point x="213.125" y="611.0" />
+      <point x="-47.25" y="38.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" relationship="TO_MANY">
+      <point x="-78.0" y="60.0" />
+      <point x="88.875" y="490.0" />
+      <point x="213.125" y="490.0" />
+      <point x="-47.25" y="-38.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingListId" relationship="DEPENDENCY">
+      <point x="47.25" y="-38.0" />
+      <point x="307.625" y="490.0" />
+      <point x="265.375" y="490.0" />
+      <point x="265.375" y="480.0" />
+      <point x="431.875" y="480.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" relationship="DEPENDENCY">
+      <point x="-78.0" y="-60.0" />
+      <point x="88.875" y="315.0" />
+      <point x="119.625" y="315.0" />
+      <point x="-47.25" y="49.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" relationship="DEPENDENCY">
+      <point x="-47.25" y="49.0" />
+      <point x="119.625" y="315.0" />
+      <point x="88.875" y="315.0" />
+      <point x="-78.0" y="-60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" relationship="TO_ONE">
+      <point x="-47.25" y="-38.0" />
+      <point x="213.125" y="490.0" />
+      <point x="88.875" y="490.0" />
+      <point x="-78.0" y="60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.User" relationship="TO_ONE">
+      <point x="-47.25" y="38.0" />
+      <point x="213.125" y="611.0" />
+      <point x="227.125" y="611.0" />
+      <point x="-33.25" y="-60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProductId" relationship="DEPENDENCY">
+      <point x="47.25" y="-49.0" />
+      <point x="214.125" y="172.0" />
+      <point x="171.875" y="172.0" />
+      <point x="171.875" y="162.0" />
+      <point x="291.0" y="162.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" relationship="DEPENDENCY">
+      <point x="78.0" y="60.0" />
+      <point x="244.875" y="480.0" />
+      <point x="265.375" y="480.0" />
+      <point x="265.375" y="490.0" />
+      <point x="307.625" y="490.0" />
+      <point x="47.25000000000001" y="-38.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.UserShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" relationship="DEPENDENCY">
+      <point x="47.25" y="-38.0" />
+      <point x="307.625" y="490.0" />
+      <point x="265.375" y="490.0" />
+      <point x="265.375" y="480.0" />
+      <point x="244.875" y="480.0" />
+      <point x="78.0" y="60.0" />
+    </edge>
+    <edge source="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList" target="de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct" relationship="TO_MANY">
+      <point x="78.0" y="-60.0" />
+      <point x="244.875" y="315.0" />
+      <point x="214.125" y="315.0" />
+      <point x="47.25" y="49.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="260.5" y="378.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
