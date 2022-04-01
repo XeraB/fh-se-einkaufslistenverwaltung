@@ -12,7 +12,6 @@ public class Product {
     private String name;
     private Integer bestBeforeTime;
     private Integer price;
-    private Boolean status;
 
     @OneToMany(mappedBy = "shoppingList")
     private List<ShoppingListProduct> shoppingListProducts;
@@ -48,13 +47,5 @@ public class Product {
 
     public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
     }
 }

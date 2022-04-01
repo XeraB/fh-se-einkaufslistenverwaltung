@@ -1,5 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,15 +13,22 @@ public class ShoppingList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserShoppingList> userShoppingLists;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<ShoppingListProduct> shoppingListProducts;
 
     private String name;
 
-    public ShoppingList(){}
+    public ShoppingList() {
+    }
+
+    public ShoppingList(String name) {
+        this.name = name;
+    }
 
     public ShoppingList(Integer id, List<UserShoppingList> userShoppingLists, List<ShoppingListProduct> shoppingListProducts, String name) {
         this.id = id;
@@ -58,5 +67,14 @@ public class ShoppingList {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public ShoppingListProduct getProductFromShoppingListById(Integer num) {
+        return null;
+    }
+
+    public ShoppingListProduct getEntry(Integer id, Integer num) {
+        return null;
     }
 }

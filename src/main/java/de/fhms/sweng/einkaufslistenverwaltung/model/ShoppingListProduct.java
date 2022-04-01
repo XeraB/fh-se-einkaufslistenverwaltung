@@ -17,14 +17,14 @@ public class ShoppingListProduct {
     @JoinColumn(name = "shoppingList_id", referencedColumnName = "id")
     private ShoppingList shoppingList;
 
-    private int count;
+    private int amount;
 
     public ShoppingListProduct(){}
 
-    public ShoppingListProduct(Product product, ShoppingList shoppingList, int count) {
+    public ShoppingListProduct(Product product, ShoppingList shoppingList, int amount) {
         this.product = product;
         this.shoppingList = shoppingList;
-        this.count = count;
+        this.amount = amount;
     }
 
     public Product getProduct() {
@@ -43,11 +43,11 @@ public class ShoppingListProduct {
         this.shoppingList = shoppingList;
     }
 
-    public int getCount() {
-        return count;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }
