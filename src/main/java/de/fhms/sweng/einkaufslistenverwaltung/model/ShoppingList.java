@@ -14,8 +14,8 @@ public class ShoppingList {
     private Integer id;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<UserShoppingList> userShoppingLists;
+    @ManyToMany(mappedBy = "shoppingLists")
+    private List<User> users;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")
@@ -30,9 +30,8 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public ShoppingList(Integer id, List<UserShoppingList> userShoppingLists, List<ShoppingListProduct> shoppingListProducts, String name) {
+    public ShoppingList(Integer id, List<ShoppingListProduct> shoppingListProducts, String name) {
         this.id = id;
-        this.userShoppingLists = userShoppingLists;
         this.shoppingListProducts = shoppingListProducts;
         this.name = name;
     }
@@ -43,14 +42,6 @@ public class ShoppingList {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public List<UserShoppingList> getUserShoppingLists() {
-        return userShoppingLists;
-    }
-
-    public void setUserShoppingLists(List<UserShoppingList> userShoppingLists) {
-        this.userShoppingLists = userShoppingLists;
     }
 
     public List<ShoppingListProduct> getShoppingListProducts() {

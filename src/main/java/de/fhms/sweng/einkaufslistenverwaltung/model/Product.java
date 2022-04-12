@@ -15,8 +15,7 @@ public class Product {
 
     @OneToMany(mappedBy = "shoppingList")
     private List<ShoppingListProduct> shoppingListProducts;
-
-
+    
     public void setId(Integer id) {
         this.id = id;
     }

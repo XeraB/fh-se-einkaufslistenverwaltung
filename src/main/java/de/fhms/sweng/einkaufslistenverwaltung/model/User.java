@@ -14,8 +14,8 @@ public class User {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "shoppingList")
-    private List<UserShoppingList> userShoppingLists;
+    @ManyToMany
+    private List<ShoppingList> shoppingLists;
 
     public User() {}
 
