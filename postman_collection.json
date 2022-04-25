@@ -27,12 +27,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/products/all",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/products/all",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -62,12 +60,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/products/1",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/products/1",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -106,12 +102,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/products/new",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/products/new",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -141,12 +135,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/products/3",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/products/3",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -181,16 +173,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/all",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
-								"all"
+								""
 							]
 						}
 					},
@@ -215,12 +205,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/1",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/1",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -249,12 +237,10 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/first",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/first",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -283,12 +269,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/rest/shoppingList/3",
-							"protocol": "http",
+							"raw": "{{route}}/rest/shoppingList/3",
 							"host": [
-								"localhost"
+								"{{route}}"
 							],
-							"port": "8080",
 							"path": [
 								"rest",
 								"shoppingList",
@@ -319,18 +303,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries/",
-					"protocol": "http",
+					"raw": "{{route}}/rest/shoppingList/1/entries/all",
 					"host": [
-						"localhost"
+						"{{route}}"
 					],
-					"port": "8080",
 					"path": [
 						"rest",
 						"shoppingList",
 						"1",
 						"entries",
-						""
+						"all"
 					]
 				}
 			},
@@ -355,12 +337,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries/1",
-					"protocol": "http",
+					"raw": "{{route}}/rest/shoppingList/1/entries/1",
 					"host": [
-						"localhost"
+						"{{route}}"
 					],
-					"port": "8080",
 					"path": [
 						"rest",
 						"shoppingList",
@@ -400,12 +380,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries",
-					"protocol": "http",
+					"raw": "{{route}}/rest/shoppingList/1/entries",
 					"host": [
-						"localhost"
+						"{{route}}"
 					],
-					"port": "8080",
 					"path": [
 						"rest",
 						"shoppingList",
@@ -435,12 +413,10 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries",
-					"protocol": "http",
+					"raw": "{{route}}/rest/shoppingList/1/entries",
 					"host": [
-						"localhost"
+						"{{route}}"
 					],
-					"port": "8080",
 					"path": [
 						"rest",
 						"shoppingList",
@@ -470,12 +446,10 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries/3",
-					"protocol": "http",
+					"raw": "{{route}}/rest/shoppingList/1/entries/3",
 					"host": [
-						"localhost"
+						"{{route}}"
 					],
-					"port": "8080",
 					"path": [
 						"rest",
 						"shoppingList",
@@ -486,6 +460,32 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "route",
+			"value": "http://test-sweng-sweng-team02-einkaufslistenverwaltung.wi-k8s.fh-muenster.de"
 		}
 	]
 }
