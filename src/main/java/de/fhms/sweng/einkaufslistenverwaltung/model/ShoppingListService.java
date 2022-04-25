@@ -64,7 +64,7 @@ public class ShoppingListService {
             shoppingListRepository.save(shoppingList);
             return shoppingList;
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new AlreadyExistException("Requested ShoppingList is already in DB");
         }
     }
 
@@ -141,7 +141,7 @@ public class ShoppingListService {
                 }
             }
             Optional<Product> productOptional = productRepository.findById(num);
-            if(productOptional.isPresent()) {
+            if (productOptional.isPresent()) {
                 Product product = productOptional.get();
                 ShoppingListProduct shoppingListProduct = new ShoppingListProduct(product, shoppingList, amount);
                 shoppingListProductRepository.save(shoppingListProduct);
@@ -167,8 +167,8 @@ public class ShoppingListService {
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             List<ShoppingListProduct> shoppingListProducts = shoppingList.getShoppingListProducts();
-            for(ShoppingListProduct i: shoppingListProducts){
-                if(i.getProduct().getId().equals(num)){
+            for (ShoppingListProduct i : shoppingListProducts) {
+                if (i.getProduct().getId().equals(num)) {
                     i.setAmount(amount);
                     shoppingListProductRepository.save(i);
                     return i;
@@ -183,16 +183,16 @@ public class ShoppingListService {
     /**
      * Deletes a product from a shopping list
      *
-     * @param id     of the shopping list
-     * @param num    of the product
+     * @param id  of the shopping list
+     * @param num of the product
      */
     public void deleteProductFromList(Integer id, Integer num) {
         Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(id);
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             List<ShoppingListProduct> shoppingListProducts = shoppingList.getShoppingListProducts();
-            for(ShoppingListProduct i: shoppingListProducts){
-                if(i.getProduct().getId().equals(num)){
+            for (ShoppingListProduct i : shoppingListProducts) {
+                if (i.getProduct().getId().equals(num)) {
                     shoppingListProductRepository.delete(i);
                     return;
                 }

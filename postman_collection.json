@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e1e14e2d-3158-40f5-b7b6-a7329d979e7e",
+		"_postman_id": "85a6f700-b758-4f61-aca2-eb0c21108234",
 		"name": "SE",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -94,7 +94,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Apfel\",\r\n    \"bestBeforeTime\": \"5\",\r\n    \"price\": \"4\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Ananas\",\r\n    \"bestBeforeTime\": \"2\",\r\n    \"price\": \"5\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -237,14 +237,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{route}}/rest/shoppingList/first",
+							"raw": "{{route}}/rest/shoppingList/Listfour",
 							"host": [
 								"{{route}}"
 							],
 							"path": [
 								"rest",
 								"shoppingList",
-								"first"
+								"Listfour"
 							]
 						}
 					},
@@ -412,6 +412,15 @@
 			"request": {
 				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productId\": \"1\",\r\n    \"shoppingListId\": \"1\",\r\n    \"amount\": \"7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{route}}/rest/shoppingList/1/entries",
 					"host": [
@@ -446,7 +455,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries/3",
+					"raw": "{{route}}/rest/shoppingList/1/entries/1",
 					"host": [
 						"{{route}}"
 					],
@@ -455,7 +464,7 @@
 						"shoppingList",
 						"1",
 						"entries",
-						"3"
+						"1"
 					]
 				}
 			},
