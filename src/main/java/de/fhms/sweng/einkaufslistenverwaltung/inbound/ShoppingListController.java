@@ -24,7 +24,7 @@ public class ShoppingListController {
         this.productService = productService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public List<ShoppingList> getShoppingLists() {
         return this.shoppingListService.getShoppingLists();
     }

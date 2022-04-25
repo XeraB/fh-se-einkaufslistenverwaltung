@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bf9f04d0-c62f-468f-a8d7-f7233447705c",
+		"_postman_id": "e1e14e2d-3158-40f5-b7b6-a7329d979e7e",
 		"name": "SE",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -319,7 +319,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/rest/shoppingList/1/entries/all",
+					"raw": "http://localhost:8080/rest/shoppingList/1/entries/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -330,7 +330,7 @@
 						"shoppingList",
 						"1",
 						"entries",
-						"all"
+						""
 					]
 				}
 			},
