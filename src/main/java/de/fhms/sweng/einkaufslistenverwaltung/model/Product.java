@@ -15,7 +15,16 @@ public class Product {
 
     @OneToMany(mappedBy = "shoppingList")
     private List<ShoppingListProduct> shoppingListProducts;
-    
+
+    public Product() {
+    }
+
+    public Product(String name, Integer bestBeforeTime, Integer price) {
+        this.name = name;
+        this.bestBeforeTime = bestBeforeTime;
+        this.price = price;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

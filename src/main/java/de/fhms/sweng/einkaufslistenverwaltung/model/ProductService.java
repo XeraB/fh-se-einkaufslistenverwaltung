@@ -27,7 +27,7 @@ public class ProductService {
             Product product = productOptional.get();
             return product;
         } else {
-            throw new RuntimeException("Requested Product is not in DB");
+            throw new ResourceNotFoundException("Requested Product is not in DB");
         }
     }
 
@@ -40,13 +40,13 @@ public class ProductService {
         if (productOptional.isPresent()) {
             return productOptional.get();
         } else {
-            throw new RuntimeException("No Product in DB");
+            throw new ResourceNotFoundException("No Product in DB");
         }
     }
 
     /**
      * Adds a new product
-     * @param product new poduct
+     * @param product new product
      * @return the new product entity
      */
     public Product addProduct(Product product) {
@@ -55,14 +55,14 @@ public class ProductService {
             List<Product> products = productOptional.get();
             for (Product i : products) {
                 if (i.getName().equals(product.getName())) {
-                    throw new RuntimeException("Product already exists");
+                    throw new AlreadyExistException("Product already exists");
                 }
             }
             products.add(product);
             productRepository.save(product);
             return product;
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new RuntimeException("Error while adding Product");
         }
     }
 
@@ -76,7 +76,7 @@ public class ProductService {
         if (product.isPresent()) {
             productRepository.delete(product.get());
         } else {
-            throw new RuntimeException("Requested Product is not in DB");
+            throw new ResourceNotFoundException("Requested Product is not in DB");
         }
     }
 }
