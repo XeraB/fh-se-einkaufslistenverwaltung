@@ -1,7 +1,6 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class User {
@@ -14,10 +13,11 @@ public class User {
     private String email;
     private String password;
 
-    @ManyToMany
-    private List<ShoppingList> shoppingLists;
+    @Column(name = "shoppingList_FK")
+    private Integer shoppingListId;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -55,5 +55,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getShoppingListId() {
+        return shoppingListId;
+    }
+
+    public void setShoppingListId(Integer shoppingListId) {
+        this.shoppingListId = shoppingListId;
     }
 }

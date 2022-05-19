@@ -1,10 +1,8 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
 
-    User findByEmail(String email);
-
-    List<User> findByName(String name);
+    Optional<User> findById(Integer id);
 }

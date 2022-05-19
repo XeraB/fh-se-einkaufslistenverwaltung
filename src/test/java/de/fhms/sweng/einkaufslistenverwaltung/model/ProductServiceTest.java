@@ -23,7 +23,7 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     private ProductService productService;
-    private List<Product> products;
+    private Set<Product> products;
     private Product product;
 
     private static final Integer TEST_ID = 1;
@@ -42,6 +42,7 @@ class ProductServiceTest {
         assertThat(product.getBestBeforeTime(), is(TEST_TIME));
         assertThat(product.getPrice(), is(TEST_PRICE));
     }
+
     @Test
     void getProductByIdException() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
@@ -54,9 +55,10 @@ class ProductServiceTest {
         given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
         products.add(this.product);
 
-        List<Product> productList = productService.getAllProducts();
+        Set<Product> productList = productService.getAllProducts();
         assertFalse(productList.isEmpty());
     }
+
     @Test
     void getAllProductsException() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
@@ -74,6 +76,7 @@ class ProductServiceTest {
         assertThat(product.getBestBeforeTime(), is(TEST_TIME));
         assertThat(product.getPrice(), is(TEST_PRICE));
     }
+
     @Test
     void addProductException() {
         given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
@@ -98,7 +101,7 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         this.productService = new ProductService(productRepository);
-        this.products = new ArrayList<>();
+        this.products = new HashSet<>();
         this.product = new Product(TEST_NAME, TEST_TIME, TEST_PRICE);
         this.product.setId(TEST_ID);
     }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -18,6 +19,7 @@ public class ProductService {
 
     /**
      * Find a certain product in the database.
+     *
      * @param id of the requested product
      * @return a product
      */
@@ -33,10 +35,11 @@ public class ProductService {
 
     /**
      * Find a certain product in the database.
+     *
      * @return a list of all products
      */
-    public List<Product> getAllProducts() {
-        Optional<List<Product>> productOptional = productRepository.getAll();
+    public Set<Product> getAllProducts() {
+        Optional<Set<Product>> productOptional = productRepository.getAll();
         if (productOptional.isPresent()) {
             return productOptional.get();
         } else {
@@ -46,13 +49,14 @@ public class ProductService {
 
     /**
      * Adds a new product
+     *
      * @param product new product
      * @return the new product entity
      */
     public Product addProduct(Product product) {
-        Optional<List<Product>> productOptional = productRepository.getAll();
+        Optional<Set<Product>> productOptional = productRepository.getAll();
         if (productOptional.isPresent()) {
-            List<Product> products = productOptional.get();
+            Set<Product> products = productOptional.get();
             for (Product i : products) {
                 if (i.getName().equals(product.getName())) {
                     throw new AlreadyExistException("Product already exists");

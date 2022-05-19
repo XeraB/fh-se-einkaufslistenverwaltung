@@ -1,7 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ProductRepository {
 
@@ -13,5 +13,5 @@ public interface ProductRepository {
 
     void delete(Product p);
 
-    Optional<List<Product>> getAll();
+    Optional<Set<Product>> getAll();
 }

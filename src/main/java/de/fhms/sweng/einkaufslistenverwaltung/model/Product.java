@@ -1,11 +1,10 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,7 +13,7 @@ public class Product {
     private Integer price;
 
     @OneToMany(mappedBy = "shoppingList")
-    private List<ShoppingListProduct> shoppingListProducts;
+    private Set<ShoppingListProduct> shoppingListProducts;
 
     public Product() {
     }

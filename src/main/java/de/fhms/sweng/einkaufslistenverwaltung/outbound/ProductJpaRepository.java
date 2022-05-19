@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ProductJpaRepository extends CrudRepository<Product, Integer>, ProductRepository {
@@ -15,6 +15,6 @@ public interface ProductJpaRepository extends CrudRepository<Product, Integer>, 
     Optional<Product> findByName(String name);
 
     @Query("SELECT p FROM Product p")
-    Optional<List<Product>> getAll();
+    Optional<Set<Product>> getAll();
 
 }

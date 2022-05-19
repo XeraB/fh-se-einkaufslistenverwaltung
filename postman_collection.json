@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "85a6f700-b758-4f61-aca2-eb0c21108234",
+		"_postman_id": "c8904517-3d85-4312-aa3e-67595d94c0b9",
 		"name": "SE",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -152,137 +152,172 @@
 			]
 		},
 		{
-			"name": "ShoppingList",
-			"item": [
+			"name": "Get a shopping list by a user id",
+			"event": [
 				{
-					"name": "Get Shopping Lists",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{route}}/rest/shoppingList/",
-							"host": [
-								"{{route}}"
-							],
-							"path": [
-								"rest",
-								"shoppingList",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Shopping List By Id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{route}}/rest/shoppingList/1",
-							"host": [
-								"{{route}}"
-							],
-							"path": [
-								"rest",
-								"shoppingList",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Add Shopping List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{route}}/rest/shoppingList/Listfour",
-							"host": [
-								"{{route}}"
-							],
-							"path": [
-								"rest",
-								"shoppingList",
-								"Listfour"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Shopping List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{route}}/rest/shoppingList/3",
-							"host": [
-								"{{route}}"
-							],
-							"path": [
-								"rest",
-								"shoppingList",
-								"3"
-							]
-						}
-					},
-					"response": []
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "1",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/user",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a shopping list for a user with a name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "2",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/Testlist",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						"Testlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove user from shopping list and delete the list, when no other user left",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "3\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a product to a shopping list with the userId, the product number and amount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"productId\": 2,\r\n\"userId\": 2,\r\n\"amount\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/entries/new",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						"entries",
+						"new"
+					]
+				}
+			},
+			"response": []
 		},
 		{
 			"name": "Get All Products From Shopping List",
@@ -313,40 +348,6 @@
 						"1",
 						"entries",
 						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Product From Shopping List By Id",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries/1",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"1",
-						"entries",
-						"1"
 					]
 				}
 			},
