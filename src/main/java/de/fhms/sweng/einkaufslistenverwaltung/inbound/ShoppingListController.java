@@ -28,8 +28,8 @@ public class ShoppingListController {
     }
 
     @GetMapping("/")
-    public List<ShoppingList> getShoppingLists() {
-        return this.shoppingListService.getShoppingLists();
+    public Boolean getShoppingLists() {
+        return true;
     }
 
     @GetMapping("/user")
