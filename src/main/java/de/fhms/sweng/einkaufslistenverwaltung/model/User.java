@@ -11,7 +11,6 @@ public class User {
 
     private String name;
     private String email;
-    private String password;
 
     @Column(name = "shoppingList_FK")
     private Integer shoppingListId;
@@ -19,10 +18,15 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.password = password;
+    }
+
+    public User(Integer id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
     }
 
     public Integer getId() {
@@ -49,13 +53,15 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public Integer getShoppingListId() {
         return shoppingListId;

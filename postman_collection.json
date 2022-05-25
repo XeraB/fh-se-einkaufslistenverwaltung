@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "c8904517-3d85-4312-aa3e-67595d94c0b9",
 		"name": "SE",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17931509"
 	},
 	"item": [
 		{
@@ -152,7 +153,7 @@
 			]
 		},
 		{
-			"name": "Get a shopping list by a user id",
+			"name": "Get All Products From Shopping List",
 			"event": [
 				{
 					"listen": "test",
@@ -182,21 +183,21 @@
 					}
 				},
 				"url": {
-					"raw": "{{route}}/rest/shoppingList/user",
+					"raw": "{{route}}/rest/shoppingList/all",
 					"host": [
 						"{{route}}"
 					],
 					"path": [
 						"rest",
 						"shoppingList",
-						"user"
+						"all"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Add a shopping list for a user with a name",
+			"name": "Add a product to a shopping list with the userId, the product number and amount",
 			"event": [
 				{
 					"listen": "test",
@@ -215,7 +216,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "2",
+					"raw": "{\r\n\"productId\": 2,\r\n\"userId\": 2,\r\n\"amount\": 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -223,14 +224,96 @@
 					}
 				},
 				"url": {
-					"raw": "{{route}}/rest/shoppingList/Testlist",
+					"raw": "{{route}}/rest/shoppingList/",
 					"host": [
 						"{{route}}"
 					],
 					"path": [
 						"rest",
 						"shoppingList",
-						"Testlist"
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Amount of Product on Shopping List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productId\": \"1\",\r\n    \"shoppingListId\": \"1\",\r\n    \"amount\": \"3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product from Shopping List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productId\": 1,\r\n    \"userId\": 2,\r\n    \"amount\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{route}}/rest/shoppingList/entry",
+					"host": [
+						"{{route}}"
+					],
+					"path": [
+						"rest",
+						"shoppingList",
+						"entry"
 					]
 				}
 			},
@@ -276,200 +359,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Add a product to a shopping list with the userId, the product number and amount",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\"productId\": 2,\r\n\"userId\": 2,\r\n\"amount\": 3\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/entries/new",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"entries",
-						"new"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get All Products From Shopping List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries/all",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"1",
-						"entries",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Product To Shopping List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"productId\": \"2\",\r\n    \"shoppingListId\": \"1\",\r\n    \"amount\": \"7\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"1",
-						"entries"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Amount of Product on Shopping List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"productId\": \"1\",\r\n    \"shoppingListId\": \"1\",\r\n    \"amount\": \"7\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"1",
-						"entries"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Product from Shopping List",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{route}}/rest/shoppingList/1/entries/1",
-					"host": [
-						"{{route}}"
-					],
-					"path": [
-						"rest",
-						"shoppingList",
-						"1",
-						"entries",
-						"1"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [
@@ -496,6 +385,11 @@
 		{
 			"key": "route",
 			"value": "http://test-sweng-sweng-team02-einkaufslistenverwaltung.wi-k8s.fh-muenster.de"
+		},
+		{
+			"key": "extra",
+			"value": "",
+			"type": "string"
 		}
 	]
 }

@@ -7,12 +7,14 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserJpaRepository extends CrudRepository<User, Integer>, UserRepository {
 
-    List<User> findByName(String name);
+    Set<User> findByName(String name);
+
+    void deleteById(Integer id);
 
     @Query("SELECT u FROM User u WHERE u.email = :email")
     User findByEmail(@Param("email") String email);

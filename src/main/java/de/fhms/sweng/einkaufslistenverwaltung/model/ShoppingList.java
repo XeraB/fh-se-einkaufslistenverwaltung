@@ -23,25 +23,19 @@ public class ShoppingList {
     @OneToMany(mappedBy = "product")
     private Set<ShoppingListProduct> shoppingListProducts;
 
-    private String name;
+    private String inviteCode;
 
     public ShoppingList() {
     }
 
-    public ShoppingList(String name) {
-        this.name = name;
-    }
-
-    public ShoppingList(Integer id, Set<ShoppingListProduct> shoppingListProducts, String name) {
+    public ShoppingList(Integer id, Set<ShoppingListProduct> shoppingListProducts) {
         this.id = id;
         this.shoppingListProducts = shoppingListProducts;
-        this.name = name;
     }
 
-    public ShoppingList(User firstUser, String name) {
+    public ShoppingList(User firstUser) {
         this.shoppingListProducts = new HashSet<ShoppingListProduct>();
-        this.users = new HashSet<User>();
-        this.users.add(firstUser);
+        this.addUser(firstUser);
     }
 
     public Integer getUserCount() {
@@ -50,6 +44,10 @@ public class ShoppingList {
 
     public void removeUser(User user) {
         users.remove(user);
+    }
+
+    public void addUser(User user) {
+        users.add(user);
     }
 
     public Integer getId() {
@@ -66,14 +64,6 @@ public class ShoppingList {
 
     public void setShoppingListProducts(Set<ShoppingListProduct> shoppingListProducts) {
         this.shoppingListProducts = shoppingListProducts;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
 

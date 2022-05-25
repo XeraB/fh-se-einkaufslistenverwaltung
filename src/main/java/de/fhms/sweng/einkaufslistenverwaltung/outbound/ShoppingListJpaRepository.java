@@ -7,17 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
-
 public interface ShoppingListJpaRepository extends CrudRepository<ShoppingList, Integer>, ShoppingListRepository {
-
-    @Query("SELECT l FROM ShoppingList l")
-    Optional<List<ShoppingList>> getAll();
-
-    /**
-     @Query("SELECT ShoppingList.id FROM ShoppingList WHERE UserShoppingList.shoppingList.id = ShoppingList.id AND User.id = :userId")
-     Optional<ShoppingList> findAll(Integer userId);
-     */
+    
+    Optional<ShoppingList> findByUsers_id(Integer id);
 }

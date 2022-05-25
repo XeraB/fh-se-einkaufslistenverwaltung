@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -28,75 +26,45 @@ public class ShoppingListController {
     }
 
     @GetMapping("/")
-    public Boolean getShoppingLists() {
+    public Boolean get() {
+        LOGGER.info("GET-Request received.");
         return true;
     }
 
-    @GetMapping("/user")
-    @Operation(summary = "Get a shopping list by a user id")
-    public ShoppingListDto getShoppingListByUserId(@RequestBody Integer userId) {
-        LOGGER.info("GET-Request of ShoppingList for user with id {} received.", userId);
-        ShoppingList shoppingList = this.shoppingListService.getShoppingListByUserId(userId);
-        return new ShoppingListDto(shoppingList);
+    @GetMapping("/all")
+    @Operation(summary = "Get all entries from a shopping list by a user id")
+    public Set<ShoppingListProductDto> getAllProductsFromShoppingListByUserId(@RequestBody Integer userId) {
+        LOGGER.info("GET-Request of ShoppingList for user {} received.", userId);
+        return this.shoppingListService.getAllProductsFromShoppingList(userId);
     }
 
-    @PostMapping("/{name}")
-    @Operation(summary = "Add a shopping list for a user with a name")
-    public ShoppingListDto addShoppingList(@PathVariable String name, @RequestBody Integer userId) {
-        LOGGER.info("POST-Request of ShoppingList {} for user with id {} received.", name, userId);
-        ShoppingList shoppingList = this.shoppingListService.addShoppingList(userId, name);
-        return new ShoppingListDto(shoppingList);
+    @PostMapping("/")
+    @Operation(summary = "Add a product to a shopping list with the userId, the product number and amount")
+    public Boolean addProductToListByUser(@RequestBody EntryDto entryDto) {
+        LOGGER.info("POST-Request of ShoppingListProduct {} {} {} received.", entryDto.getUserId(), entryDto.getProductId(), entryDto.getAmount());
+        return this.shoppingListService.addProductToList(entryDto);
+    }
+
+    @PutMapping("/")
+    @Operation(summary = "Change the amount of a product on a shopping list")
+    public ShoppingListProductDto updateAmount(@RequestBody ShoppingListProductDto shoppingListProductDto) {
+        //TODO change from shoppinglistid to userid ?
+        LOGGER.info("PUT-Request of ShoppingListProduct at List {} received.");
+        return this.shoppingListService.updateAmount(shoppingListProductDto.getShoppingListId(), shoppingListProductDto.getProductId(), shoppingListProductDto.getAmount());
+    }
+
+    @DeleteMapping("/entry")
+    @Operation(summary = "Delete an entry from a shopping list")
+    public void deleteProductFromList(@RequestBody EntryDto entryDto) {
+        LOGGER.info("DELETE-Request of ShoppingListProduct for User {} at Product {} received.", entryDto.getUserId(), entryDto.getProductId());
+        this.shoppingListService.deleteProductFromList(entryDto);
     }
 
     @DeleteMapping("/")
     @Operation(summary = "Remove user from shopping list and delete the list, when no other user left")
     public void deleteShoppingList(@RequestBody Integer userId) {
-        LOGGER.info("DELETE-Request of ShoppingList {} received.", userId);
+        LOGGER.info("DELETE-Request of User {} received.", userId);
         this.shoppingListService.deleteShoppingList(userId);
-    }
-
-    @PostMapping("/entries/new")
-    @Operation(summary = "Add a product to a shopping list with the userId, the product number and amount")
-    public Boolean addProductToListByUser(@RequestBody EntryDto entryDto) {
-        LOGGER.info("POST-Request of ShoppingListProduct received.");
-        return this.shoppingListService.addProductToList(entryDto);
-    }
-
-    @GetMapping("/{id}/entries/all")
-    @Operation(summary = "Get the entries from a shopping list by its id")
-    public Set<ShoppingListProductDto> getAllProductsFromShoppingList(@PathVariable Integer id) {
-        //TODO: Rückgabe des Eintrags mit Produktname, etc.
-        Set<ShoppingListProduct> shoppingListProduct = this.shoppingListService.getAllProductsFromShoppingList(id);
-        Set<ShoppingListProductDto> shoppingListProductDtos = new HashSet<>();
-        for (ShoppingListProduct product : shoppingListProduct) {
-            shoppingListProductDtos.add(new ShoppingListProductDto(product.getProduct().getId(), product.getShoppingList().getId(), product.getAmount()));
-        }
-        return shoppingListProductDtos;
-    }
-
-    @PostMapping("/{id}/entries")
-    @Operation(summary = "Add a product to a shopping list")
-    public ShoppingListProductDto addProductToList(@PathVariable Integer id, @RequestBody ShoppingListProductDto shoppingListProductDto) {
-        //TODO: Rückgabe des Eintrags mit Produktname, etc.
-        LOGGER.info("POST-Request of ShoppingListProduct at List {} received.", id);
-        ShoppingListProduct shoppingListProduct = this.shoppingListService.addProductToList(id, shoppingListProductDto.getProductId(), shoppingListProductDto.getAmount());
-        return new ShoppingListProductDto(shoppingListProduct);
-    }
-
-    @PutMapping("/{id}/entries")
-    @Operation(summary = "Change the amount of a product on a shopping list")
-    public ShoppingListProductDto updateAmount(@PathVariable Integer id, @RequestBody ShoppingListProductDto shoppingListProductDto) {
-        //TODO: Rückgabe des Eintrags mit Produktname, etc.
-        LOGGER.info("PUT-Request of ShoppingListProduct at List {} received.", id);
-        ShoppingListProduct shoppingListProduct = this.shoppingListService.updateAmount(id, shoppingListProductDto.getProductId(), shoppingListProductDto.getAmount());
-        return shoppingListProductDto;
-    }
-
-    @DeleteMapping("/{id}/entries/{num}")
-    @Operation(summary = "Delete an entry from a shopping list")
-    public void deleteProductFromList(@PathVariable Integer id, @PathVariable Integer num) {
-        LOGGER.info("DELETE-Request of ShoppingListProduct at List {} received.", id);
-        this.shoppingListService.deleteProductFromList(id, num);
     }
 
 
