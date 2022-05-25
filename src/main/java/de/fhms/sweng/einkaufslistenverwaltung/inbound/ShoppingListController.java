@@ -53,6 +53,10 @@ public class ShoppingListController {
         return this.shoppingListService.updateAmount(shoppingListProductDto.getShoppingListId(), shoppingListProductDto.getProductId(), shoppingListProductDto.getAmount());
     }
 
+    //TODO: Endpoint move Entry from shoppinglist to fridge
+    //delete entrie from list
+    //send entry to food client
+
     @DeleteMapping("/entry")
     @Operation(summary = "Delete an entry from a shopping list")
     public void deleteProductFromList(@RequestBody EntryDto entryDto) {
@@ -88,6 +92,14 @@ public class ShoppingListController {
         LOGGER.info("POST-Request of Product received.");
         return this.productService.addProduct(product);
     }
+
+    @PutMapping("/products/update")
+    @Operation(summary = "Update a product")
+    public Product updateProduct(@RequestBody Product product) {
+        LOGGER.info("PUT-Request of Product received.");
+        return this.productService.updateProduct(product);
+    }
+
 
     @DeleteMapping("/products/{id}")
     @Operation(summary = "Delete a product")
