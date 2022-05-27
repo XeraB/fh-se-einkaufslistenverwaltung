@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -31,10 +32,12 @@ public class ShoppingList {
     public ShoppingList(Integer id, Set<ShoppingListProduct> shoppingListProducts) {
         this.id = id;
         this.shoppingListProducts = shoppingListProducts;
+        this.users = new HashSet<User>();
     }
 
     public ShoppingList(User firstUser) {
         this.shoppingListProducts = new HashSet<ShoppingListProduct>();
+        this.users = new HashSet<User>();
         this.addUser(firstUser);
     }
 
@@ -58,6 +61,14 @@ public class ShoppingList {
         this.id = id;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
     public Set<ShoppingListProduct> getShoppingListProducts() {
         return shoppingListProducts;
     }
@@ -66,12 +77,34 @@ public class ShoppingList {
         this.shoppingListProducts = shoppingListProducts;
     }
 
-
-    public ShoppingListProduct getProductFromShoppingListById(Integer num) {
-        return null;
+    public String getInviteCode() {
+        return inviteCode;
     }
 
-    public ShoppingListProduct getEntry(Integer id, Integer num) {
-        return null;
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingList{" +
+                "id=" + id +
+                ", users=" + users +
+                ", shoppingListProducts=" + shoppingListProducts +
+                ", inviteCode='" + inviteCode + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShoppingList that = (ShoppingList) o;
+        return id.equals(that.id) && Objects.equals(users, that.users) && Objects.equals(shoppingListProducts, that.shoppingListProducts) && Objects.equals(inviteCode, that.inviteCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, users, shoppingListProducts, inviteCode);
     }
 }

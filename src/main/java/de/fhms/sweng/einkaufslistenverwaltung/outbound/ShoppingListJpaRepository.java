@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.Optional;
 
 public interface ShoppingListJpaRepository extends CrudRepository<ShoppingList, Integer>, ShoppingListRepository {
-    
+
     Optional<ShoppingList> findByUsers_id(Integer id);
+
+    ShoppingList save(ShoppingList shoppingList);
 }

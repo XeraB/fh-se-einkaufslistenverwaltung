@@ -113,11 +113,30 @@ public class ProductService {
     /**
      * Update a product
      *
-     * @param product
+     * @param updatedProduct
      * @return the updated product
      */
-    public Product updateProduct(Product product) {
-        //TODO:
-        return null;
+    public Product updateProduct(Product updatedProduct) {
+        LOGGER.info("Execute updateProduct({}).", updatedProduct.getName());
+        Optional<Product> productOptional = productRepository.findById(updatedProduct.getId());
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            if(updatedProduct.equals(product)){
+                return updatedProduct;
+            }
+            productRepository.save(updatedProduct);
+            var event = new ProductAddedEvent(product.getId(), product.getName(), product.getBestBeforeTime(), product.getPrice());
+            var published = this.eventPublisher.publishEvent(event);
+            if (!published) {
+                LOGGER.error("Event could not be published. Performing rollback.");
+                productRepository.save(product);
+                throw new RuntimeException("Error while publishing Product");
+            }
+            LOGGER.info("Product {} sucessfully updated.", product.getName());
+            return product;
+        } else {
+            LOGGER.error("Product could not be added.");
+            throw new RuntimeException("Error while updating Product");
+        }
     }
 }

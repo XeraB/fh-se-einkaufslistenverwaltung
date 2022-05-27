@@ -1,8 +1,17 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Objects;
 
-public class UserEvent {
+
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = UserRegisteredEvent.class, name = "userRegistered"),
+        @JsonSubTypes.Type(value = UserDeletedEvent.class, name = "userDeleted"),
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+public abstract class UserEvent {
 
     private Integer userId;
 

@@ -10,6 +10,12 @@ public class EntryDto {
     public EntryDto() {
     }
 
+    public EntryDto(Integer productId, Integer userId, Integer amount) {
+        this.productId = productId;
+        this.userId = userId;
+        this.amount = amount;
+    }
+
     public Integer getProductId() {
         return productId;
     }

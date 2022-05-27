@@ -41,18 +41,19 @@ public class ShoppingListService {
      * @param userName
      * @param email
      */
-    public void addUserWithNewShoppingList(int userId, String userName, String email) {
+    public Boolean addUserWithNewShoppingList(int userId, String userName, String email) {
         LOGGER.info("Execute addUserWithNewShoppingList({},{},{}).", userId, userName, email);
-        var user = new User(userName, email);
+        User user = new User(userId, userName, email);
         ShoppingList shoppingList = new ShoppingList(user);
         shoppingListRepository.save(shoppingList);
+        return true;
     }
 
     /**
      * Adds a new user to an existing ShoppingList
      */
-    public void addUserToShoppingList() {
-        LOGGER.info("Execute addUserToShoppingList().");
+    public void addUserToShoppingList(int userId, String userName, String email, String inviteCode) {
+        LOGGER.info("Execute addUserToShoppingList({},{},{}, {}).", userId, userName, email, inviteCode);
         //TODO
     }
 
@@ -66,7 +67,7 @@ public class ShoppingListService {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(user.getShoppingListId());
+            Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
             if (shoppingListOptional.isPresent()) {
                 ShoppingList shoppingList = shoppingListOptional.get();
                 if (shoppingList.getUserCount() < 2) {
@@ -186,7 +187,8 @@ public class ShoppingListService {
         Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(id);
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
-            Set<ShoppingListProduct> shoppingListProducts = shoppingList.getShoppingListProducts();
+            Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
+            ;
             for (ShoppingListProduct i : shoppingListProducts) {
                 if (i.getProduct().getId().equals(num)) {
                     i.setAmount(amount);

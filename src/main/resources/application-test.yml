@@ -28,14 +28,6 @@ spring:
                 username: admin
                 password: PHz55LqQuj
                 virtual-host: guest
-      rabbit:
-        bindings:
-          input:
-            consumer:
-              exchange-type: fanout
-          output:
-            consumer:
-              exchange-type: fanout
 
 #rabbitmq Daten zur Durchführung der Health Checks
 rabbitmq:

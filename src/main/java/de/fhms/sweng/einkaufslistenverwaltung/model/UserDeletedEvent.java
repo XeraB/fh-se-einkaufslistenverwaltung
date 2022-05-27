@@ -11,7 +11,7 @@ public class UserDeletedEvent extends UserEvent {
     }
 
     public UserDeletedEvent(Integer userId, String name, String email) {
-        super();
+        super(userId);
         this.name = name;
         this.email = email;
     }

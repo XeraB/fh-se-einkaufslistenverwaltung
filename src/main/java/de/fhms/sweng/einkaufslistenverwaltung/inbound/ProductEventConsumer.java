@@ -4,9 +4,11 @@ import de.fhms.sweng.einkaufslistenverwaltung.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
+@Component
 public class ProductEventConsumer implements Consumer<ProductEvent> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -29,13 +31,17 @@ public class ProductEventConsumer implements Consumer<ProductEvent> {
             accept((ProductDeletedEvent) productEvent);
         }
     }
-    public void accept(ProductAddedEvent productAddedEvent){
+
+    //TODO
+    public void accept(ProductAddedEvent productAddedEvent) {
         LOGGER.info("Consumed Event: " + productAddedEvent);
     }
-    public void accept(ProductUpdatedEvent productUpdatedEvent){
+
+    public void accept(ProductUpdatedEvent productUpdatedEvent) {
         LOGGER.info("Consumed Event: " + productUpdatedEvent);
     }
-    public void accept(ProductDeletedEvent productDeletedEvent){
+
+    public void accept(ProductDeletedEvent productDeletedEvent) {
         LOGGER.info("Consumed Event: " + productDeletedEvent);
     }
 }

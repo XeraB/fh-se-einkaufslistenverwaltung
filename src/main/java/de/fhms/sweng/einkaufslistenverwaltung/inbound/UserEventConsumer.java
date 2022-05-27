@@ -7,9 +7,11 @@ import de.fhms.sweng.einkaufslistenverwaltung.model.UserRegisteredEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
+@Component
 public class UserEventConsumer implements Consumer<UserEvent> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());

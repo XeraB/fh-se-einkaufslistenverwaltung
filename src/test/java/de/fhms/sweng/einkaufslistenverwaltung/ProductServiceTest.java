@@ -1,5 +1,6 @@
-package de.fhms.sweng.einkaufslistenverwaltung.model;
+package de.fhms.sweng.einkaufslistenverwaltung;
 
+import de.fhms.sweng.einkaufslistenverwaltung.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,12 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private EventPublisher eventPublisher;
+
+    private ProductAddedEvent productAddedEvent;
+
+    private ProductDeletedEvent productDeletedEvent;
 
     private ProductService productService;
     private Set<Product> products;
@@ -33,10 +40,20 @@ class ProductServiceTest {
 
     private static final Integer TEST_ID_FALSE = 2;
 
+    @BeforeEach
+    void setUp() {
+        this.productService = new ProductService(productRepository, eventPublisher);
+        this.products = new HashSet<>();
+        this.product = new Product(TEST_NAME, TEST_TIME, TEST_PRICE);
+        this.product.setId(TEST_ID);
+        productAddedEvent = new ProductAddedEvent(TEST_ID, TEST_NAME, TEST_TIME, TEST_PRICE);
+        productDeletedEvent = new ProductDeletedEvent(TEST_ID, TEST_NAME);
+    }
+
     @Test
     void getProductById() {
-        given(this.productRepository.findById(TEST_ID)).willReturn(Optional.of(this.product));
-        Product product = this.productService.getProductById(TEST_ID);
+        given(productRepository.findById(TEST_ID)).willReturn(Optional.of(product));
+        Product product = productService.getProductById(TEST_ID);
         assertThat(product.getId(), is(TEST_ID));
         assertThat(product.getName(), is(TEST_NAME));
         assertThat(product.getBestBeforeTime(), is(TEST_TIME));
@@ -46,14 +63,14 @@ class ProductServiceTest {
     @Test
     void getProductByIdException() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            this.productService.getProductById(TEST_ID_FALSE);
+            productService.getProductById(TEST_ID_FALSE);
         });
     }
 
     @Test
     void getAllProducts() {
-        given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
-        products.add(this.product);
+        given(productRepository.getAll()).willReturn(Optional.of(products));
+        products.add(product);
 
         Set<Product> productList = productService.getAllProducts();
         assertFalse(productList.isEmpty());
@@ -62,16 +79,17 @@ class ProductServiceTest {
     @Test
     void getAllProductsException() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            this.productService.getAllProducts();
+            productService.getAllProducts();
         });
     }
 
     @Test
     void addProduct() {
-        given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
+        given(productRepository.getAll()).willReturn(Optional.of(products));
+        given(eventPublisher.publishEvent(productAddedEvent)).willReturn(true);
 
-        assertFalse(this.productService.getAllProducts().contains(this.product));
-        Product product = this.productService.addProduct(this.product);
+        assertFalse(productService.getAllProducts().contains(product));
+        Product product = productService.addProduct(this.product);
         assertThat(product.getName(), is(TEST_NAME));
         assertThat(product.getBestBeforeTime(), is(TEST_TIME));
         assertThat(product.getPrice(), is(TEST_PRICE));
@@ -79,31 +97,23 @@ class ProductServiceTest {
 
     @Test
     void addProductException() {
-        given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
-        products.add(this.product);
+        given(productRepository.getAll()).willReturn(Optional.of(products));
+        products.add(product);
 
         Assertions.assertThrows(AlreadyExistException.class, () -> {
-            this.productService.addProduct(this.product);
+            productService.addProduct(product);
         });
     }
 
     @Test
     void deleteProduct() {
-        given(this.productRepository.findById(TEST_ID)).willReturn(Optional.of(this.product));
-        given(this.productRepository.getAll()).willReturn(Optional.of(this.products));
-        products.add(this.product);
+        given(productRepository.findById(TEST_ID)).willReturn(Optional.of(product));
+        given(productRepository.getAll()).willReturn(Optional.of(products));
+        given(eventPublisher.publishEvent(productDeletedEvent)).willReturn(true);
+        products.add(product);
 
-        assertTrue(this.productService.getAllProducts().contains(this.product));
-        this.productService.deleteProduct(TEST_ID);
-        Mockito.verify(this.productRepository, times(1)).delete(this.product);
+        assertTrue(productService.getAllProducts().contains(product));
+        productService.deleteProduct(TEST_ID);
+        Mockito.verify(productRepository, times(1)).delete(product);
     }
-
-    @BeforeEach
-    void setUp() {
-        this.productService = new ProductService(productRepository);
-        this.products = new HashSet<>();
-        this.product = new Product(TEST_NAME, TEST_TIME, TEST_PRICE);
-        this.product.setId(TEST_ID);
-    }
-
 }
