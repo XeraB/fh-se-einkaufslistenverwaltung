@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class ShoppingListServiceTest {
 
     private ShoppingListProduct shoppingListProduct;
     private Set<ShoppingListProduct> entries;
+    private EntryDto entryDto;
 
     private static final Integer TEST_USERID = 8;
     private static final String TEST_USERNAME = "Test User";
@@ -70,6 +72,7 @@ public class ShoppingListServiceTest {
         this.product.setId(TEST_ID);
         this.shoppingListProduct = new ShoppingListProduct(this.product, this.shoppingList, TEST_AMOUNT);
         this.entries = new HashSet<ShoppingListProduct>();
+        this.entryDto = new EntryDto(TEST_ID, TEST_USERID, TEST_AMOUNT);
     }
 
     @Test
@@ -118,11 +121,23 @@ public class ShoppingListServiceTest {
 
     @Test
     public void updateAmount() {
-        given(this.shoppingListRepository.findById(TEST_LISTID)).willReturn(Optional.of(this.shoppingList));
-        given(this.shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(this.entries);
-        this.entries.add(shoppingListProduct);
-        ShoppingListProductDto entry = this.shoppingListService.updateAmount(TEST_LISTID, TEST_ID, TEST_AMOUNTNEW);
+        given(shoppingListRepository.findById(TEST_LISTID)).willReturn(Optional.of(shoppingList));
+        given(this.shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+        entries.add(shoppingListProduct);
+        ShoppingListProductDto entry = shoppingListService.updateAmount(TEST_LISTID, TEST_ID, TEST_AMOUNTNEW);
         assertThat(entry.getAmount(), is(TEST_AMOUNTNEW));
+    }
+
+    @Test
+    public void deleteProductFromListAndSendFoodClient() {
+        given(foodServiceClient.postFoodEntry(entryDto)).willReturn(new FoodEntry(1, 1, LocalDate.of(2022, 5, 27), true));
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
+        given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+        entries.add(shoppingListProduct);
+
+        shoppingListService.deleteProductFromListAndSendFoodClient(entryDto);
+        Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
+        Mockito.verify(foodServiceClient, times(1)).postFoodEntry(entryDto);
     }
 
     @Test
@@ -130,12 +145,15 @@ public class ShoppingListServiceTest {
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        shoppingListService.deleteProductFromList(new EntryDto(TEST_ID, TEST_USERID, TEST_AMOUNT));
+        shoppingListService.deleteProductFromList(entryDto);
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
     }
 
     @Test
     public void addFoodEntry() {
-
+        given(foodServiceClient.postFoodEntry(entryDto)).willReturn(new FoodEntry(1, 1, LocalDate.of(2022, 5, 27), true));
+        Boolean result = shoppingListService.addFoodEntry(entryDto);
+        assertTrue(result);
+        Mockito.verify(foodServiceClient, times(1)).postFoodEntry(entryDto);
     }
 }

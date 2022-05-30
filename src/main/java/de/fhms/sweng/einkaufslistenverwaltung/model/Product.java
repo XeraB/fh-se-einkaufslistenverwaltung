@@ -12,6 +12,9 @@ public class Product {
     private Integer bestBeforeTime;
     private Integer price;
 
+    @Version
+    private long version;
+
     @OneToMany(mappedBy = "shoppingList")
     private Set<ShoppingListProduct> shoppingListProducts;
 

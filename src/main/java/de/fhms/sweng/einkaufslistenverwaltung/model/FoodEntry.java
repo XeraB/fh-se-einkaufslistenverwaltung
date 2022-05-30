@@ -12,11 +12,11 @@ public class FoodEntry {
     public FoodEntry() {
     }
 
-    public FoodEntry(FoodEntry fridge) {
-        this.id = fridge.getId();
-        this.amount = fridge.getAmount();
-        this.addedDate = fridge.getAddedDate();
-        this.opened = fridge.getOpened();
+    public FoodEntry(Integer id, Integer amount, LocalDate addedDate, Boolean opened) {
+        this.id = id;
+        this.amount = amount;
+        this.addedDate = addedDate;
+        this.opened = opened;
     }
 
     public Integer getId() {

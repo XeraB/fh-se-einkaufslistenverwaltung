@@ -19,7 +19,11 @@ public class ShoppingListProduct {
 
     private int amount;
 
-    public ShoppingListProduct(){}
+    @Version
+    private long version;
+
+    public ShoppingListProduct() {
+    }
 
     public ShoppingListProduct(Product product, ShoppingList shoppingList, int amount) {
         this.product = product;

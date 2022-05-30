@@ -15,6 +15,9 @@ public class User {
     @Column(name = "shoppingList_FK")
     private Integer shoppingListId;
 
+    @Version
+    private long version;
+
     public User() {
     }
 

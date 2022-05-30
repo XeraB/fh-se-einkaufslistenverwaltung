@@ -26,6 +26,9 @@ public class ShoppingList {
 
     private String inviteCode;
 
+    @Version
+    private long version;
+
     public ShoppingList() {
     }
 

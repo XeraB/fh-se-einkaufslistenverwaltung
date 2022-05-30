@@ -1,14 +1,22 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
+import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OptimisticLockException;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Retryable(include = {OptimisticLockException.class, StaleStateException.class},
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 100, maxDelay = 500))
 public class ProductService {
 
     private ProductRepository productRepository;
@@ -27,6 +35,7 @@ public class ProductService {
      * @param id of the requested product
      * @return a product
      */
+    @Transactional(readOnly = true)
     public Product getProductById(Integer id) {
         LOGGER.info("Execute getProductById({}).", id);
         Optional<Product> productOptional = productRepository.findById(id);
@@ -43,6 +52,7 @@ public class ProductService {
      *
      * @return a list of all products
      */
+    @Transactional
     public Set<Product> getAllProducts() {
         LOGGER.info("Execute getAllProducts().");
         Optional<Set<Product>> productOptional = productRepository.getAll();
@@ -59,6 +69,7 @@ public class ProductService {
      * @param product new product
      * @return the new product entity
      */
+    @Transactional
     public Product addProduct(Product product) {
         LOGGER.info("Execute addProduct({}).", product.getName());
         Optional<Set<Product>> productOptional = productRepository.getAll();
@@ -93,6 +104,7 @@ public class ProductService {
      *
      * @param id of the product that should be deleted
      */
+    @Transactional
     public void deleteProduct(Integer id) {
         LOGGER.info("Execute deleteProduct({}).", id);
         Optional<Product> productOptional = productRepository.findById(id);
@@ -110,18 +122,20 @@ public class ProductService {
             throw new ResourceNotFoundException("Requested Product is not in DB");
         }
     }
+
     /**
      * Update a product
      *
      * @param updatedProduct
      * @return the updated product
      */
+    @Transactional
     public Product updateProduct(Product updatedProduct) {
         LOGGER.info("Execute updateProduct({}).", updatedProduct.getName());
         Optional<Product> productOptional = productRepository.findById(updatedProduct.getId());
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
-            if(updatedProduct.equals(product)){
+            if (updatedProduct.equals(product)) {
                 return updatedProduct;
             }
             productRepository.save(updatedProduct);
