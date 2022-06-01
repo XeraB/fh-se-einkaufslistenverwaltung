@@ -47,7 +47,7 @@ public class PersistenceTests {
     public void findByEmailShouldWork() {
         User user1 = userRepository.findByEmail("test1@test.com");
         assertEquals(1, user1.getId());
-        User user = userRepository.findByEmail("test4@test.com");
+        User user = userRepository.findByEmail("test14@test.com");
         assertNull(user);
     }
 
