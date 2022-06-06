@@ -26,14 +26,14 @@ spring:
           environment:
             spring:
               rabbitmq:
-                host: rabbitmq.team02.svc.cluster.local
+                host: localhost
                 port: 5672
-                username: admin
-                password: PHz55LqQuj
+                username: guest
+                password: guest
                 #virtual-host: guest
 
-#rabbitmq Daten zur Durchführung der Health Checks
+  #rabbitmq Daten zur Durchführung der Health Checks
   rabbitmq:
-    host: rabbitmq.team02.svc.cluster.local
-    username: admin
-    password: PHz55LqQuj
+    host: localhost
+    username: guest
+    password: guest

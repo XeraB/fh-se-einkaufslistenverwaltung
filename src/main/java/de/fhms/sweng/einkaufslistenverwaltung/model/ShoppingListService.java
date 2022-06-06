@@ -181,17 +181,18 @@ public class ShoppingListService {
     /**
      * Deletes a product from a shopping list
      *
-     * @param entryDto
+     * @param productId
+     * @param userId
      */
     @Transactional
-    public void deleteProductFromList(EntryDto entryDto) {
-        LOGGER.info("Execute deleteProductFromList({}, {}).", entryDto.getUserId(), entryDto.getProductId());
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(entryDto.getUserId());
+    public void deleteProductFromList(Integer productId, Integer userId) {
+        LOGGER.info("Execute deleteProductFromList({}, {}).", userId, productId);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(userId);
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
             for (ShoppingListProduct i : shoppingListProducts) {
-                if (i.getProduct().getId().equals(entryDto.getProductId())) {
+                if (i.getProduct().getId().equals(productId)) {
                     shoppingListProductRepository.delete(i);
                     return;
                 }
@@ -212,7 +213,7 @@ public class ShoppingListService {
     public void deleteProductFromListAndSendFoodClient(EntryDto entryDto) {
         Boolean result = addFoodEntry(entryDto);
         if (result) {
-            deleteProductFromList(entryDto);
+            deleteProductFromList(entryDto.getProductId(), entryDto.getUserId());
         }
     }
 

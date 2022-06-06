@@ -145,7 +145,7 @@ public class ShoppingListServiceTest {
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        shoppingListService.deleteProductFromList(entryDto);
+        shoppingListService.deleteProductFromList(entryDto.getProductId(), entryDto.getUserId());
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
     }
 

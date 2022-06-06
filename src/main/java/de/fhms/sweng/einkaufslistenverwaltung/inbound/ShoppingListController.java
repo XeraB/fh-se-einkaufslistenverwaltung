@@ -31,9 +31,9 @@ public class ShoppingListController {
         return true;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all/{userId}")
     @Operation(summary = "Get all entries from a shopping list by a user id")
-    public Set<ShoppingListProductDto> getAllProductsFromShoppingListByUserId(@RequestBody Integer userId) {
+    public Set<ShoppingListProductDto> getAllProductsFromShoppingListByUserId(@PathVariable Integer userId) {
         LOGGER.info("GET-Request of ShoppingList for user {} received.", userId);
         return this.shoppingListService.getAllProductsFromShoppingList(userId);
     }
@@ -57,11 +57,11 @@ public class ShoppingListController {
     //delete entrie from list
     //send entry to food client
 
-    @DeleteMapping("/entry")
+    @DeleteMapping("/entry/{productId}/{userId}")
     @Operation(summary = "Delete an entry from a shopping list")
-    public void deleteProductFromList(@RequestBody EntryDto entryDto) {
-        LOGGER.info("DELETE-Request of ShoppingListProduct for User {} at Product {} received.", entryDto.getUserId(), entryDto.getProductId());
-        this.shoppingListService.deleteProductFromList(entryDto);
+    public void deleteProductFromList(@PathVariable Integer productId, @PathVariable Integer userId) {
+        LOGGER.info("DELETE-Request of ShoppingListProduct for User {} at Product {} received.", userId, productId);
+        this.shoppingListService.deleteProductFromList(productId, userId);
     }
 
     @DeleteMapping("/")
