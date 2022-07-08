@@ -1,6 +1,6 @@
-package de.fhms.sweng.einkaufslistenverwaltung.model;
+package de.fhms.sweng.einkaufslistenverwaltung.model.repository;
 
-import org.springframework.data.repository.query.Param;
+import de.fhms.sweng.einkaufslistenverwaltung.model.User;
 
 import java.util.Optional;
 import java.util.Set;
@@ -12,6 +12,8 @@ public interface UserRepository {
     void deleteById(Integer id);
 
     User findByEmail(String email);
+
+    User save(User user);
 
     Set<User> findByName(String name);
 }

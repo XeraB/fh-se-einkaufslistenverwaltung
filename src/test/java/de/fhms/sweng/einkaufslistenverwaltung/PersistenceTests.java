@@ -1,10 +1,16 @@
 package de.fhms.sweng.einkaufslistenverwaltung;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.*;
+import de.fhms.sweng.einkaufslistenverwaltung.model.Product;
+import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList;
+import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
+import de.fhms.sweng.einkaufslistenverwaltung.model.User;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 
 import java.util.Iterator;
 import java.util.Optional;

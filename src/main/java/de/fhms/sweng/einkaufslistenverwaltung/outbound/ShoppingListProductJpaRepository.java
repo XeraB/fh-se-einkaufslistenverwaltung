@@ -1,7 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.outbound;
 
 import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Set;
@@ -10,4 +10,6 @@ public interface ShoppingListProductJpaRepository extends CrudRepository<Shoppin
     Iterable<ShoppingListProduct> findAll();
 
     Set<ShoppingListProduct> findAllByShoppingList_Id(Integer shoppingList_id);
+
+    void deleteAllByShoppingList_Id(Integer shoppingList_id);
 }

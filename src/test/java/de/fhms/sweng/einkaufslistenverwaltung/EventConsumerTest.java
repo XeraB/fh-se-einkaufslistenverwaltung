@@ -1,8 +1,8 @@
 package de.fhms.sweng.einkaufslistenverwaltung;
 
 import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListService;
-import de.fhms.sweng.einkaufslistenverwaltung.model.UserDeletedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.UserRegisteredEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.UserDeletedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.UserRegisteredEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +29,7 @@ public class EventConsumerTest {
     void testConsumeRegisterUserMessage() {
         this.inputDestination.send(
                 MessageBuilder
-                        .withPayload(new UserRegisteredEvent(42, "Gustav", "gustav@web.de", "4711"))
+                        .withPayload(new UserRegisteredEvent(42, "Gustav", "gustav@web.de", ""))
                         .build()
         );
         //checks if the EventConsumer class triggers the right service method on consumption of an event:
@@ -44,7 +44,7 @@ public class EventConsumerTest {
                         .build()
         );
         //checks if the EventConsumer class triggers the right service method on consumption of an event:
-        verify(this.spyShoppingListService, times(1)).deleteShoppingList(42);
+        verify(this.spyShoppingListService, times(1)).deleteShoppingList("gustav@web.de");
     }
 
 }

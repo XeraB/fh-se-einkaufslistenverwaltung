@@ -1,14 +1,19 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class ShoppingList {
 
     @Id
@@ -29,15 +34,6 @@ public class ShoppingList {
     @Version
     private long version;
 
-    public ShoppingList() {
-    }
-
-    public ShoppingList(Integer id, Set<ShoppingListProduct> shoppingListProducts) {
-        this.id = id;
-        this.shoppingListProducts = shoppingListProducts;
-        this.users = new HashSet<User>();
-    }
-
     public ShoppingList(User firstUser) {
         this.shoppingListProducts = new HashSet<ShoppingListProduct>();
         this.users = new HashSet<User>();
@@ -56,58 +52,4 @@ public class ShoppingList {
         users.add(user);
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<ShoppingListProduct> getShoppingListProducts() {
-        return shoppingListProducts;
-    }
-
-    public void setShoppingListProducts(Set<ShoppingListProduct> shoppingListProducts) {
-        this.shoppingListProducts = shoppingListProducts;
-    }
-
-    public String getInviteCode() {
-        return inviteCode;
-    }
-
-    public void setInviteCode(String inviteCode) {
-        this.inviteCode = inviteCode;
-    }
-
-    @Override
-    public String toString() {
-        return "ShoppingList{" +
-                "id=" + id +
-                ", users=" + users +
-                ", shoppingListProducts=" + shoppingListProducts +
-                ", inviteCode='" + inviteCode + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ShoppingList that = (ShoppingList) o;
-        return id.equals(that.id) && Objects.equals(users, that.users) && Objects.equals(shoppingListProducts, that.shoppingListProducts) && Objects.equals(inviteCode, that.inviteCode);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, users, shoppingListProducts, inviteCode);
-    }
 }

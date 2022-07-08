@@ -1,4 +1,6 @@
-package de.fhms.sweng.einkaufslistenverwaltung.model;
+package de.fhms.sweng.einkaufslistenverwaltung.model.repository;
+
+import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
 
 import java.util.Set;
 
@@ -11,4 +13,6 @@ public interface ShoppingListProductRepository {
     ShoppingListProduct save(ShoppingListProduct s);
 
     void delete(ShoppingListProduct shoppingListProduct);
+
+    void deleteAllByShoppingList_Id(Integer shoppingList_id);
 }

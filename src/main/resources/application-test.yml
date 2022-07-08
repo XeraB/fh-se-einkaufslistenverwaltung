@@ -2,10 +2,27 @@
 spring:
   cloud:
     function:
-      definition: deletedEventConsumer; registeredEventConsumer
+      definition: userEventConsumer; foodEventConsumer; recipeEventConsumer;
       stream:
+      rabbit:
         bindings:
           eventPublisher-out-0:
+            producer:
+              transacted: true
+          userEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
+          foodEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
+          recipeEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
+      bindings:
+        eventPublisher-out-0:
             destination: test.list.events
             binder: cloud_rabbit
           userEventConsumer-in-0:

@@ -4,36 +4,53 @@ spring:
     function:
       definition: userEventConsumer; foodEventConsumer; recipeEventConsumer;
     stream:
+      rabbit:
+        bindings:
+          eventPublisher-out-0:
+            producer:
+              transacted: true
+          userEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
+          foodEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
+          recipeEventConsumer-in-0:
+            consumer:
+              transacted: true
+              max-attempts: 3
       bindings:
         eventPublisher-out-0:
           destination: list.events
-          binder: cloud_rabbit
+          binder: local_rabbit
         userEventConsumer-in-0:
           destination: user.events
           group: listQueue
-          binder: cloud_rabbit
+          binder: local_rabbit
         foodEventConsumer-in-0:
           destination: food.events
           group: listQueue
-          binder: cloud_rabbit
+          binder: local_rabbit
         recipeEventConsumer-in-0:
           destination: recipe.events
           group: listQueue
-          binder: cloud_rabbit
+          binder: local_rabbit
       binders:
-        cloud_rabbit:
+        local_rabbit:
           type: rabbit
           environment:
             spring:
               rabbitmq:
-                host: rabbitmq.team02.svc.cluster.local
+                host: localhost
                 port: 5672
-                username: admin
-                password: PHz55LqQuj
+                username: guest
+                password: guest
                 #virtual-host: guest
 
 #rabbitmq Daten zur Durchführung der Health Checks
-  rabbitmq:
-    host: rabbitmq.team02.svc.cluster.local
-    username: admin
-    password: PHz55LqQuj
+#  rabbitmq:
+#    host: rabbitmq.team02.svc.cluster.local
+#    username: admin
+#    password: PHz55LqQuj

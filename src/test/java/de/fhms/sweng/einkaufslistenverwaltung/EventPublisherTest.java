@@ -2,8 +2,8 @@ package de.fhms.sweng.einkaufslistenverwaltung;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fhms.sweng.einkaufslistenverwaltung.model.EventPublisher;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ProductAddedEvent;
 import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListService;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductAddedEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

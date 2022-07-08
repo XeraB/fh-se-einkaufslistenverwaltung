@@ -1,5 +1,11 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductAddedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductDeletedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductUpdatedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,15 +145,15 @@ public class ProductService {
                 return updatedProduct;
             }
             productRepository.save(updatedProduct);
-            var event = new ProductAddedEvent(product.getId(), product.getName(), product.getBestBeforeTime(), product.getPrice());
+            var event = new ProductUpdatedEvent(updatedProduct.getId(), updatedProduct.getName(), updatedProduct.getBestBeforeTime(), updatedProduct.getPrice());
             var published = this.eventPublisher.publishEvent(event);
             if (!published) {
                 LOGGER.error("Event could not be published. Performing rollback.");
                 productRepository.save(product);
                 throw new RuntimeException("Error while publishing Product");
             }
-            LOGGER.info("Product {} sucessfully updated.", product.getName());
-            return product;
+            LOGGER.info("Product {} sucessfully updated.", updatedProduct.getName());
+            return updatedProduct;
         } else {
             LOGGER.error("Product could not be added.");
             throw new RuntimeException("Error while updating Product");

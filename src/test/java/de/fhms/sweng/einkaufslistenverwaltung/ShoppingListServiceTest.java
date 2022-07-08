@@ -3,6 +3,13 @@ package de.fhms.sweng.einkaufslistenverwaltung;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.EntryDto;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.ShoppingListProductDto;
 import de.fhms.sweng.einkaufslistenverwaltung.model.*;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +24,8 @@ import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
@@ -72,7 +80,7 @@ public class ShoppingListServiceTest {
         this.product.setId(TEST_ID);
         this.shoppingListProduct = new ShoppingListProduct(this.product, this.shoppingList, TEST_AMOUNT);
         this.entries = new HashSet<ShoppingListProduct>();
-        this.entryDto = new EntryDto(TEST_ID, TEST_USERID, TEST_AMOUNT);
+        this.entryDto = new EntryDto(TEST_ID, TEST_AMOUNT);
     }
 
     @Test
@@ -88,65 +96,149 @@ public class ShoppingListServiceTest {
 
     @Test
     public void deleteShoppingList() {
-        given(userRepository.findById(TEST_USERID)).willReturn(Optional.of(user));
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
-        shoppingListService.deleteShoppingList(TEST_USERID);
+        shoppingListService.deleteShoppingList(TEST_USERMAIL);
         Mockito.verify(userRepository, times(1)).deleteById(TEST_USERID);
     }
 
     @Test
+    public void deleteShoppingListExceptionNoShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.deleteShoppingList(TEST_USERMAIL);
+        });
+    }
+
+    @Test
     public void getAllProductsFromShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
-        given(shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId())).willReturn(entries);
+        given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        Set<ShoppingListProductDto> listProductDtos = shoppingListService.getAllProductsFromShoppingList(TEST_USERID);
+        Set<ShoppingListProductDto> listProductDtos = shoppingListService.getAllProductsFromShoppingList(TEST_USERMAIL);
         assertFalse(listProductDtos.isEmpty());
     }
 
     @Test
-    public void addProductToList() {
+    public void getAllProductsFromShoppingListException() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.getAllProductsFromShoppingList(TEST_USERMAIL);
+        });
+    }
 
+    @Test
+    public void addProductToListProductAlreadyExists() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
+        given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+        entries.add(shoppingListProduct);
+
+        Assertions.assertThrows(AlreadyExistException.class, () -> {
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+        });
     }
 
     @Test
     public void addProductToList2() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         given(productRepository.findById(TEST_ID)).willReturn(Optional.of(product));
-        assertFalse(shoppingListService.getAllProductsFromShoppingList(TEST_USERID).contains(shoppingListProduct));
+        assertFalse(shoppingListService.getAllProductsFromShoppingList(TEST_USERMAIL).contains(shoppingListProduct));
 
-        Boolean result = shoppingListService.addProductToList(new EntryDto(TEST_ID, TEST_USERID, TEST_AMOUNT));
+        Boolean result = shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
         assertTrue(result);
     }
 
     @Test
+    public void addProductToListExceptionNoProduct() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
+        given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+        });
+    }
+
+    @Test
+    public void addProductToListExceptionNoShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+        });
+    }
+
+    @Test
     public void updateAmount() {
-        given(shoppingListRepository.findById(TEST_LISTID)).willReturn(Optional.of(shoppingList));
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(this.shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        ShoppingListProductDto entry = shoppingListService.updateAmount(TEST_LISTID, TEST_ID, TEST_AMOUNTNEW);
+        ShoppingListProductDto entry = shoppingListService.updateAmount(TEST_USERMAIL, TEST_ID, TEST_AMOUNTNEW);
         assertThat(entry.getAmount(), is(TEST_AMOUNTNEW));
     }
 
     @Test
+    public void updateAmountExceptionNoProduct() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
+        given(this.shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.updateAmount(TEST_USERMAIL, TEST_ID, TEST_AMOUNTNEW);
+        });
+    }
+
+    @Test
+    public void updateAmountExceptionNoShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.updateAmount(TEST_USERMAIL, TEST_ID, TEST_AMOUNTNEW);
+        });
+    }
+
+    @Test
     public void deleteProductFromListAndSendFoodClient() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         given(foodServiceClient.postFoodEntry(entryDto)).willReturn(new FoodEntry(1, 1, LocalDate.of(2022, 5, 27), true));
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
 
-        shoppingListService.deleteProductFromListAndSendFoodClient(entryDto);
+        shoppingListService.deleteProductFromListAndSendFoodClient(TEST_USERMAIL, entryDto);
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
         Mockito.verify(foodServiceClient, times(1)).postFoodEntry(entryDto);
     }
 
     @Test
     public void deleteProductFromList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        shoppingListService.deleteProductFromList(entryDto);
+        shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
+    }
+
+    @Test
+    public void deleteProductFromListExceptionNoProduct() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
+        given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
+        });
+    }
+
+    @Test
+    public void deleteProductFromListExceptionNoShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
+        });
     }
 
     @Test

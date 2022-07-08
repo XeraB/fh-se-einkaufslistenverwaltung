@@ -1,8 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.outbound;
 
 import de.fhms.sweng.einkaufslistenverwaltung.model.EventPublisher;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ProductAddedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ProductEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

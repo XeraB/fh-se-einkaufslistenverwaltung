@@ -1,8 +1,15 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "shopping_list_product")
 @IdClass(ShoppingListProductId.class)
 public class ShoppingListProduct {
@@ -21,37 +28,10 @@ public class ShoppingListProduct {
 
     @Version
     private long version;
-
-    public ShoppingListProduct() {
-    }
-
+    
     public ShoppingListProduct(Product product, ShoppingList shoppingList, int amount) {
         this.product = product;
         this.shoppingList = shoppingList;
-        this.amount = amount;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public ShoppingList getShoppingList() {
-        return shoppingList;
-    }
-
-    public void setShoppingList(ShoppingList shoppingList) {
-        this.shoppingList = shoppingList;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
         this.amount = amount;
     }
 }

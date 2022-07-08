@@ -2,13 +2,18 @@ package de.fhms.sweng.einkaufslistenverwaltung.model;
 
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.EntryDto;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.ShoppingListProductDto;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.UserRepository;
 import feign.RetryableException;
 import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +58,7 @@ public class ShoppingListService {
         User user = new User(userId, userName, email);
         ShoppingList shoppingList = new ShoppingList(user);
         shoppingListRepository.save(shoppingList);
+        userRepository.save(user);
         return true;
     }
 
@@ -68,42 +74,38 @@ public class ShoppingListService {
     /**
      * Remove user from shopping list and delete the list, when no other user left
      *
-     * @param id of the user that was deleted
+     * @param userEmail of the current user
      */
     @Transactional
-    public void deleteShoppingList(Integer id) {
-        LOGGER.info("Execute deleteShoppingList({}).", id);
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
-            if (shoppingListOptional.isPresent()) {
-                ShoppingList shoppingList = shoppingListOptional.get();
-                if (shoppingList.getUserCount() < 2) {
-                    shoppingListRepository.delete(shoppingList);
-                } else {
-                    shoppingList.removeUser(user);
-                    //shoppingListRepository.save(shoppingList);
-                }
-                userRepository.deleteById(id);
+    public void deleteShoppingList(String userEmail) {
+        LOGGER.info("Execute deleteShoppingList({}).", userEmail);
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
+        if (shoppingListOptional.isPresent()) {
+            ShoppingList shoppingList = shoppingListOptional.get();
+            if (shoppingList.getUserCount() < 2) {
+                shoppingListProductRepository.deleteAllByShoppingList_Id(shoppingList.getId());
+                shoppingListRepository.delete(shoppingList);
             } else {
-                throw new RuntimeException("Requested ShoppingList is not in DB");
+                shoppingList.removeUser(user);
             }
+            userRepository.deleteById(user.getId());
         } else {
-            throw new RuntimeException("Requested User is not in DB");
+            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
         }
     }
 
     /**
      * Get all Products from a Shopping List from the database
      *
-     * @param id from the shopping list
+     * @param userEmail of the current user
      * @return a list with shopping lists
      */
     @Transactional(readOnly = true)
-    public Set<ShoppingListProductDto> getAllProductsFromShoppingList(Integer id) {
-        LOGGER.info("Execute getAllProductsFromShoppingList({}).", id);
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(id);
+    public Set<ShoppingListProductDto> getAllProductsFromShoppingList(String userEmail) {
+        LOGGER.info("Execute getAllProductsFromShoppingList({}).", userEmail);
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
@@ -113,26 +115,28 @@ public class ShoppingListService {
             }
             return shoppingListProductDtos;
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
         }
     }
 
     /**
      * Adds a product to a shopping list
      *
+     * @param userEmail of the current user
      * @param entryDto
      * @return
      */
     @Transactional
-    public Boolean addProductToList(EntryDto entryDto) {
-        LOGGER.info("Execute addProductToList({},{},{}).", entryDto.getUserId(), entryDto.getProductId(), entryDto.getAmount());
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(entryDto.getUserId());
+    public Boolean addProductToList(String userEmail, EntryDto entryDto) {
+        LOGGER.info("Execute addProductToList({},{},{}).", userEmail, entryDto.getProductId(), entryDto.getAmount());
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
             for (ShoppingListProduct entry : shoppingListProducts) {
                 if (entry.getProduct().getId().equals(entryDto.getProductId())) {
-                    throw new RuntimeException("Product already exists on Shopping List");
+                    throw new AlreadyExistException("Product already exists on Shopping List");
                 }
             }
             Optional<Product> productOptional = productRepository.findById(entryDto.getProductId());
@@ -142,51 +146,52 @@ public class ShoppingListService {
                 shoppingListProductRepository.save(shoppingListProduct);
                 return true;
             } else {
-                throw new RuntimeException("Requested Product is not in DB");
+                throw new ResourceNotFoundException("Requested Product is not in DB");
             }
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
         }
     }
 
     /**
      * Changes the amount of a product on a shopping list
      *
-     * @param id     of the shopping list
-     * @param num    of the product
-     * @param amount to be set
+     * @param userEmail of the current user
+     * @param num       of the product
+     * @param amount    to be set
      * @return the changed product entity
      */
     @Transactional
-    public ShoppingListProductDto updateAmount(Integer id, Integer num, Integer amount) {
-        //TODO: change to userid ?
-        LOGGER.info("Execute updateAmount({}, {}, {}).", id, num, amount);
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(id);
+    public ShoppingListProductDto updateAmount(String userEmail, Integer num, Integer amount) {
+        LOGGER.info("Execute updateAmount({}, {}, {}).", userEmail, num, amount);
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
             for (ShoppingListProduct i : shoppingListProducts) {
                 if (i.getProduct().getId().equals(num)) {
                     i.setAmount(amount);
-                    //shoppingListProductRepository.save(i);
                     return new ShoppingListProductDto(i);
                 }
             }
-            throw new RuntimeException("Requested Product is not in Shopping List");
+            throw new ResourceNotFoundException("Requested Product is not in Shopping List");
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
         }
     }
 
     /**
      * Deletes a product from a shopping list
      *
+     * @param userEmail of the current user
      * @param entryDto
      */
     @Transactional
-    public void deleteProductFromList(EntryDto entryDto) {
-        LOGGER.info("Execute deleteProductFromList({}, {}).", entryDto.getUserId(), entryDto.getProductId());
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(entryDto.getUserId());
+    public void deleteProductFromList(String userEmail, EntryDto entryDto) {
+        LOGGER.info("Execute deleteProductFromList({}, {}).", userEmail, entryDto.getProductId());
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
@@ -196,9 +201,9 @@ public class ShoppingListService {
                     return;
                 }
             }
-            throw new RuntimeException("Requested Product is not in Shopping List");
+            throw new ResourceNotFoundException("Requested Product is not in Shopping List");
         } else {
-            throw new RuntimeException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
         }
     }
 
@@ -206,13 +211,14 @@ public class ShoppingListService {
      * Deletes a product from a shopping list
      * and sends the entry to the foodService
      *
+     * @param userEmail of the current user
      * @param entryDto
      */
     @Transactional
-    public void deleteProductFromListAndSendFoodClient(EntryDto entryDto) {
+    public void deleteProductFromListAndSendFoodClient(String userEmail, EntryDto entryDto) {
         Boolean result = addFoodEntry(entryDto);
         if (result) {
-            deleteProductFromList(entryDto);
+            deleteProductFromList(userEmail, entryDto);
         }
     }
 

@@ -1,7 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.outbound;
 
 import de.fhms.sweng.einkaufslistenverwaltung.model.Product;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
