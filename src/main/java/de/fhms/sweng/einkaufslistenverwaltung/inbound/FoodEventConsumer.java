@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 import java.util.function.Consumer;
 
 @Component
-public class ProductEventConsumer implements Consumer<ProductEvent> {
+public class FoodEventConsumer implements Consumer<ProductEvent> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final ShoppingListService shoppingListService;
 
     @Autowired
-    public ProductEventConsumer(ShoppingListService shoppingListService) {
+    public FoodEventConsumer(ShoppingListService shoppingListService) {
         this.shoppingListService = shoppingListService;
     }
 

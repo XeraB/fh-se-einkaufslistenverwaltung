@@ -2,7 +2,7 @@
 spring:
   cloud:
     function:
-      definition: userEventConsumer; foodEventConsumer; recipeEventConsumer;
+      definition: userEventConsumer;foodEventConsumer;recipeEventConsumer;
     stream:
       rabbit:
         bindings:
@@ -24,33 +24,32 @@ spring:
       bindings:
         eventPublisher-out-0:
           destination: list.events
-          binder: local_rabbit
+          binder: cloud_rabbit
         userEventConsumer-in-0:
           destination: user.events
           group: listQueue
-          binder: local_rabbit
+          binder: cloud_rabbit
         foodEventConsumer-in-0:
           destination: food.events
           group: listQueue
-          binder: local_rabbit
+          binder: cloud_rabbit
         recipeEventConsumer-in-0:
           destination: recipe.events
           group: listQueue
-          binder: local_rabbit
+          binder: cloud_rabbit
       binders:
-        local_rabbit:
+        cloud_rabbit:
           type: rabbit
           environment:
             spring:
               rabbitmq:
-                host: localhost
+                host: goose-01.rmq2.cloudamqp.com
                 port: 5672
-                username: guest
-                password: guest
-                #virtual-host: guest
-
-#rabbitmq Daten zur Durchführung der Health Checks
-#  rabbitmq:
-#    host: rabbitmq.team02.svc.cluster.local
-#    username: admin
-#    password: PHz55LqQuj
+                username: ejnvcsrm
+                password: TYKDzrPXmD9t37A-GuL_RjCqSuTkE8CE
+                virtual-host: ejnvcsrm
+  #rabbitmq Daten zur Durchführung der Health Checks
+  rabbitmq:
+    host: goose-01.rmq2.cloudamqp.com
+    username: ejnvcsrm
+    password: TYKDzrPXmD9t37A-GuL_RjCqSuTkE8CE
