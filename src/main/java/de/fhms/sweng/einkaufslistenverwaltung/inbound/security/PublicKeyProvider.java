@@ -18,6 +18,11 @@ public class PublicKeyProvider {
 
     private PublicKey publicKey;
 
+    /**
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
+     */
     @PostConstruct
     protected void loadSigningKeys() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         //read public key

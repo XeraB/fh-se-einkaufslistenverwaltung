@@ -1,6 +1,6 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model.repository;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.ShoppingListProduct;
 
 import java.util.Set;
 

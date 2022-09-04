@@ -1,9 +1,6 @@
 package de.fhms.sweng.einkaufslistenverwaltung;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.Product;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingList;
-import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
-import de.fhms.sweng.einkaufslistenverwaltung.model.User;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.*;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
@@ -102,7 +99,7 @@ public class PersistenceTests {
      */
     @Test
     public void saveShouldWork() {
-        User user = new User(1, "Test", "test@test.com");
+        User user = new User(1, "Test", "test@test.com", Role.USER);
         ShoppingList shoppingList = new ShoppingList(user);
         System.out.print("Service: addUser() " + shoppingList.toString());
         ShoppingList shoppingList1 = shoppingListRepository.save(shoppingList);

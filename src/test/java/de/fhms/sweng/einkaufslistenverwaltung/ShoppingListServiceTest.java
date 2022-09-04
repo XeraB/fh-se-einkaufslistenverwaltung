@@ -1,14 +1,15 @@
 package de.fhms.sweng.einkaufslistenverwaltung;
 
-import de.fhms.sweng.einkaufslistenverwaltung.inbound.EntryDto;
+import de.fhms.sweng.einkaufslistenverwaltung.inbound.types.EntryDto;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.ShoppingListProductDto;
 import de.fhms.sweng.einkaufslistenverwaltung.model.*;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.ResourceNotFoundException;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.UserRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,7 @@ public class ShoppingListServiceTest {
     private static final Integer TEST_USERID = 8;
     private static final String TEST_USERNAME = "Test User";
     private static final String TEST_USERMAIL = "test@test.de";
+    private static final String TEST_INVITECODE = "Ifn79j";
     private static final Integer TEST_LISTID = 1;
     private static final Integer TEST_ID = 1;
     private static final String TEST_NAME = "Apfel";
@@ -73,7 +75,7 @@ public class ShoppingListServiceTest {
     @BeforeEach
     void setUp() {
         this.shoppingListService = new ShoppingListService(shoppingListRepository, shoppingListProductRepository, productRepository, userRepository, foodServiceClient);
-        this.user = new User(TEST_USERID, TEST_USERNAME, TEST_USERMAIL);
+        this.user = new User(TEST_USERID, TEST_USERNAME, TEST_USERMAIL, Role.USER);
         this.shoppingList = new ShoppingList(this.user);
         this.shoppingList.setId(TEST_LISTID);
         this.product = new Product(TEST_NAME, TEST_TIME, TEST_PRICE);
@@ -85,13 +87,27 @@ public class ShoppingListServiceTest {
 
     @Test
     public void addUserWithNewShoppingList() {
-        Boolean result = shoppingListService.addUserWithNewShoppingList(TEST_USERID, TEST_USERNAME, TEST_USERMAIL);
+        Boolean result = shoppingListService.addUserWithNewShoppingList(TEST_USERMAIL);
         assertTrue(result);
     }
 
     @Test
     public void addUserToShoppingList() {
-        //TODO
+        ShoppingList newShoppingList = new ShoppingList(new User(2, "OtherTestUser", "test@email", Role.USER));
+        given(shoppingListRepository.findByInviteCode(TEST_INVITECODE)).willReturn(Optional.of(newShoppingList));
+
+        Assertions.assertDoesNotThrow(() -> {
+            shoppingListService.addUserToShoppingList(TEST_USERMAIL, TEST_INVITECODE);
+        });
+        Mockito.verify(shoppingListRepository, times(1)).findByInviteCode(TEST_INVITECODE);
+    }
+
+    @Test
+    public void addUserToShoppingListExceptionNoShoppingList() {
+        given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            shoppingListService.addUserToShoppingList(TEST_USERMAIL, TEST_INVITECODE);
+        });
     }
 
     @Test
@@ -148,8 +164,8 @@ public class ShoppingListServiceTest {
         given(productRepository.findById(TEST_ID)).willReturn(Optional.of(product));
         assertFalse(shoppingListService.getAllProductsFromShoppingList(TEST_USERMAIL).contains(shoppingListProduct));
 
-        Boolean result = shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
-        assertTrue(result);
+        ShoppingListProductDto result = shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+        assertTrue(result != null);
     }
 
     @Test
@@ -211,6 +227,15 @@ public class ShoppingListServiceTest {
         shoppingListService.deleteProductFromListAndSendFoodClient(TEST_USERMAIL, entryDto);
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
         Mockito.verify(foodServiceClient, times(1)).postFoodEntry(entryDto);
+    }
+
+    @Test
+    public void deleteProductFromListAndSendFoodClientException() {
+        given(foodServiceClient.postFoodEntry(entryDto)).willReturn(null);
+
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            shoppingListService.deleteProductFromListAndSendFoodClient(TEST_USERMAIL, entryDto);
+        });
     }
 
     @Test

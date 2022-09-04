@@ -1,13 +1,14 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
-import de.fhms.sweng.einkaufslistenverwaltung.inbound.EntryDto;
+import de.fhms.sweng.einkaufslistenverwaltung.inbound.types.EntryDto;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.ShoppingListProductDto;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.ResourceNotFoundException;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListProductRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ShoppingListRepository;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.UserRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.*;
 import feign.RetryableException;
 import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
@@ -46,29 +47,36 @@ public class ShoppingListService {
     }
 
     /**
-     * Adds a new user and creates a new ShoppingList
+     * Creates a new ShoppingList and adds the user
      *
-     * @param userId
-     * @param userName
-     * @param email
+     * @param userEmail
      */
     @Transactional
-    public Boolean addUserWithNewShoppingList(int userId, String userName, String email) {
-        LOGGER.info("Execute addUserWithNewShoppingList({},{},{}).", userId, userName, email);
-        User user = new User(userId, userName, email);
+    public Boolean addUserWithNewShoppingList(String userEmail) {
+        LOGGER.info("Execute addUserWithNewShoppingList({}).", userEmail);
+        User user = userRepository.findByEmail(userEmail);
         ShoppingList shoppingList = new ShoppingList(user);
         shoppingListRepository.save(shoppingList);
-        userRepository.save(user);
         return true;
     }
 
     /**
-     * Adds a new user to an existing ShoppingList
+     * Adds a user to an existing ShoppingList
+     *
+     * @param userEmail
+     * @param inviteCode for an existing ShoppingList
      */
     @Transactional
-    public void addUserToShoppingList(int userId, String userName, String email, String inviteCode) {
-        LOGGER.info("Execute addUserToShoppingList({},{},{}, {}).", userId, userName, email, inviteCode);
-        //TODO
+    public void addUserToShoppingList(String userEmail, String inviteCode) {
+        LOGGER.info("Execute addUserToShoppingList({}, {}).", userEmail, inviteCode);
+        User user = userRepository.findByEmail(userEmail);
+        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByInviteCode(inviteCode);
+        if (shoppingListOptional.isPresent()) {
+            ShoppingList shoppingList = shoppingListOptional.get();
+            shoppingList.addUser(user);
+        } else {
+            throw new ResourceNotFoundException("No ShoppingList found for requested Invitecode");
+        }
     }
 
     /**
@@ -91,7 +99,7 @@ public class ShoppingListService {
             }
             userRepository.deleteById(user.getId());
         } else {
-            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("No ShoppingList Found for User");
         }
     }
 
@@ -115,7 +123,7 @@ public class ShoppingListService {
             }
             return shoppingListProductDtos;
         } else {
-            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("No ShoppingList Found for User");
         }
     }
 
@@ -127,7 +135,7 @@ public class ShoppingListService {
      * @return
      */
     @Transactional
-    public Boolean addProductToList(String userEmail, EntryDto entryDto) {
+    public ShoppingListProductDto addProductToList(String userEmail, EntryDto entryDto) {
         LOGGER.info("Execute addProductToList({},{},{}).", userEmail, entryDto.getProductId(), entryDto.getAmount());
         User user = userRepository.findByEmail(userEmail);
         Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
@@ -144,12 +152,12 @@ public class ShoppingListService {
                 Product product = productOptional.get();
                 ShoppingListProduct shoppingListProduct = new ShoppingListProduct(product, shoppingList, entryDto.getAmount());
                 shoppingListProductRepository.save(shoppingListProduct);
-                return true;
+                return new ShoppingListProductDto(shoppingListProduct);
             } else {
-                throw new ResourceNotFoundException("Requested Product is not in DB");
+                throw new ResourceNotFoundException("Requested Product does not exist");
             }
         } else {
-            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("No ShoppingList Found for User");
         }
     }
 
@@ -177,7 +185,7 @@ public class ShoppingListService {
             }
             throw new ResourceNotFoundException("Requested Product is not in Shopping List");
         } else {
-            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("No ShoppingList Found for User");
         }
     }
 
@@ -203,7 +211,7 @@ public class ShoppingListService {
             }
             throw new ResourceNotFoundException("Requested Product is not in Shopping List");
         } else {
-            throw new ResourceNotFoundException("Requested ShoppingList is not in DB");
+            throw new ResourceNotFoundException("No ShoppingList Found for User");
         }
     }
 
@@ -219,6 +227,8 @@ public class ShoppingListService {
         Boolean result = addFoodEntry(entryDto);
         if (result) {
             deleteProductFromList(userEmail, entryDto);
+        } else {
+            throw new RuntimeException("Product could not be added to Fridge/stock");
         }
     }
 
@@ -233,8 +243,12 @@ public class ShoppingListService {
             backoff = @Backoff(delay = 100, maxDelay = 500))
     public Boolean addFoodEntry(EntryDto entryDto) {
         LOGGER.info("Execute addFoodEntry({},{}, {}).", entryDto.getProductId(), entryDto.getProductId(), entryDto.getAmount());
-        foodServiceClient.postFoodEntry(entryDto);
-        return true;
+        FoodEntry foodEntry = foodServiceClient.postFoodEntry(entryDto);
+        if (foodEntry != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
