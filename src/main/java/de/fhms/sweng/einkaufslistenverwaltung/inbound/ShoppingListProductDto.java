@@ -1,6 +1,6 @@
 package de.fhms.sweng.einkaufslistenverwaltung.inbound;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListProduct;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.ShoppingListProduct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

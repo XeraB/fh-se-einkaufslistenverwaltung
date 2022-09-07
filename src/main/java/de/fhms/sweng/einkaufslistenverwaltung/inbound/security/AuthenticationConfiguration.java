@@ -26,6 +26,13 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * Configures the Authentication required to send a Request at a specific Path.
+     * Paths for Actuator Health and Swagger Documentation don't require Authentication.
+     *
+     * @param http
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()

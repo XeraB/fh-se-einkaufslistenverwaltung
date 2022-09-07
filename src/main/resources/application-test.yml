@@ -51,5 +51,6 @@ spring:
   #rabbitmq Daten zur Durchführung der Health Checks
   rabbitmq:
     host: goose-01.rmq2.cloudamqp.com
+    virtual-host: ejnvcsrm
     username: ejnvcsrm
     password: TYKDzrPXmD9t37A-GuL_RjCqSuTkE8CE

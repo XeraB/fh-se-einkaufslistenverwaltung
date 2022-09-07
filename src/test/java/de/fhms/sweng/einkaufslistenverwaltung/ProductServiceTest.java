@@ -1,13 +1,13 @@
 package de.fhms.sweng.einkaufslistenverwaltung;
 
 import de.fhms.sweng.einkaufslistenverwaltung.model.EventPublisher;
-import de.fhms.sweng.einkaufslistenverwaltung.model.Product;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.Product;
 import de.fhms.sweng.einkaufslistenverwaltung.model.ProductService;
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductAddedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductDeletedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductUpdatedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductAddedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductDeletedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductUpdatedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.ResourceNotFoundException;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,6 @@ class ProductServiceTest {
 
     private ProductAddedEvent productAddedEvent;
     private ProductUpdatedEvent productUpdatedEvent;
-
     private ProductDeletedEvent productDeletedEvent;
 
     private ProductService productService;

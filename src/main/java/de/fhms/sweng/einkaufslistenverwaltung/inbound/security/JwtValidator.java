@@ -1,8 +1,10 @@
 package de.fhms.sweng.einkaufslistenverwaltung.inbound.security;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.Role;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.Role;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.ResourceNotFoundException;
 import io.jsonwebtoken.Jwts;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtValidator {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -37,7 +41,12 @@ public class JwtValidator {
         return null;
     }
 
-
+    /**
+     * Checks whether a string is a valid JWT.
+     *
+     * @param token that should be checked
+     * @return true, if the parsed String is a valid JWT
+     */
     public boolean isValidJWT(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(keys.getPublicKey()).build().parseClaimsJws(token);
@@ -52,7 +61,7 @@ public class JwtValidator {
      * Derives Authentication object from JWT.
      *
      * @param token
-     * @return
+     * @return an Object containing the email and the role of the user
      */
     public Authentication getAuthentication(String token) {
         return new UsernamePasswordAuthenticationToken(getUserEmail(token), "", getRoles(token));
@@ -62,7 +71,7 @@ public class JwtValidator {
      * Extracts the user's email from a JWT.
      *
      * @param token
-     * @return
+     * @return the user email
      */
     public String getUserEmail(String token) {
         return Jwts.parserBuilder().setSigningKey(keys.getPublicKey()).build().parseClaimsJws(token).getBody().getSubject();
@@ -79,6 +88,8 @@ public class JwtValidator {
         String temp = Jwts.parserBuilder().setSigningKey(keys.getPublicKey()).build().parseClaimsJws(token).getBody().get("auth", String.class);
         if (temp.equals("USER")) {
             result.add(Role.USER);
+        } else if (temp.equals("PREMIUM")) {
+            result.add(Role.PREMIUM);
         } else if (temp.equals("ADMIN")) {
             result.add(Role.ADMIN);
         }

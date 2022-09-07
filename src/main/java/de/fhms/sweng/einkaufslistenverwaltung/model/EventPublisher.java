@@ -1,7 +1,7 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductEvent;
 
 public interface EventPublisher {
-    public boolean publishEvent(ProductEvent event);
+    boolean publishEvent(ProductEvent event);
 }

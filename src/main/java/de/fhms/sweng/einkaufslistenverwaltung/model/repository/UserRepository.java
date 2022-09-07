@@ -1,6 +1,6 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model.repository;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.User;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.User;
 
 import java.util.Optional;
 import java.util.Set;

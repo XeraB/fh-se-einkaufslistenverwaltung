@@ -1,11 +1,12 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model;
 
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductAddedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductDeletedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.event.ProductUpdatedEvent;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.AlreadyExistException;
-import de.fhms.sweng.einkaufslistenverwaltung.model.exception.ResourceNotFoundException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductAddedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductDeletedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.events.product.ProductUpdatedEvent;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.AlreadyExistException;
+import de.fhms.sweng.einkaufslistenverwaltung.model.exceptions.ResourceNotFoundException;
 import de.fhms.sweng.einkaufslistenverwaltung.model.repository.ProductRepository;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.Product;
 import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.OptimisticLockException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Retryable(include = {OptimisticLockException.class, StaleStateException.class},
@@ -49,7 +51,7 @@ public class ProductService {
             Product product = productOptional.get();
             return product;
         } else {
-            throw new ResourceNotFoundException("Requested Product is not in DB");
+            throw new ResourceNotFoundException("Requested Product doesn't exist");
         }
     }
 
@@ -65,7 +67,7 @@ public class ProductService {
         if (productOptional.isPresent()) {
             return productOptional.get();
         } else {
-            throw new ResourceNotFoundException("No Product in DB");
+            throw new ResourceNotFoundException("No Product found");
         }
     }
 
@@ -78,14 +80,16 @@ public class ProductService {
     @Transactional
     public Product addProduct(Product product) {
         LOGGER.info("Execute addProduct({}).", product.getName());
+
         Optional<Set<Product>> productOptional = productRepository.getAll();
         if (productOptional.isPresent()) {
             Set<Product> products = productOptional.get();
-            for (Product i : products) {
-                if (i.getName().equals(product.getName())) {
-                    LOGGER.error("Product already exists.");
-                    throw new AlreadyExistException("Product already exists");
-                }
+            Boolean empty = products.stream()
+                    .filter(p -> p.getName().equals(product.getName()))
+                    .collect(Collectors.toList()).isEmpty();
+            if (!empty) {
+                LOGGER.error("Product already exists.");
+                throw new AlreadyExistException("Product already exists");
             }
             products.add(product);
             productRepository.save(product);
@@ -125,7 +129,7 @@ public class ProductService {
                 throw new RuntimeException("Error while publishing Product");
             }
         } else {
-            throw new ResourceNotFoundException("Requested Product is not in DB");
+            throw new ResourceNotFoundException("Requested Product was not found");
         }
     }
 
@@ -155,8 +159,55 @@ public class ProductService {
             LOGGER.info("Product {} sucessfully updated.", updatedProduct.getName());
             return updatedProduct;
         } else {
-            LOGGER.error("Product could not be added.");
-            throw new RuntimeException("Error while updating Product");
+            LOGGER.error("Product could not be found.");
+            throw new RuntimeException("Product doesn't exist. Please add Product first.");
         }
+    }
+
+    /**
+     * Saves a product received as a ProductAddedEvent
+     *
+     * @param id
+     * @param name
+     * @param bestBeforeTime
+     * @param price
+     */
+    @Transactional
+    public void addProductFromEvent(Integer id, String name, Integer bestBeforeTime, Integer price) {
+        Product product = new Product(name, bestBeforeTime, price);
+        product.setId(id);
+        productRepository.save(product);
+    }
+
+    /**
+     * Updates a product received as a ProductUpdatedEvent
+     *
+     * @param id
+     * @param name
+     * @param bestBeforeTime
+     * @param price
+     */
+    @Transactional
+    public void updateProductFromEvent(Integer id, String name, Integer bestBeforeTime, Integer price) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            product.setName(name);
+            product.setBestBeforeTime(bestBeforeTime);
+            product.setPrice(price);
+        } else {
+            LOGGER.error("Product could not be found.");
+            throw new RuntimeException("Product doesn't exist. Please add Product first.");
+        }
+    }
+
+    /**
+     * Deletes a product received as a ProductDeletedEvent
+     *
+     * @param id
+     */
+    @Transactional
+    public void deleteProductFromEvent(Integer id) {
+        productRepository.deleteById(id);
     }
 }
