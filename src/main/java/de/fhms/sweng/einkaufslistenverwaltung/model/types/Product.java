@@ -1,10 +1,13 @@
 package de.fhms.sweng.einkaufslistenverwaltung.model.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,8 +25,9 @@ public class Product {
     @Version
     private long version;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "shoppingList")
-    private Set<ShoppingListProduct> shoppingListProducts;
+    private List<ShoppingListProduct> shoppingListProducts;
 
     public Product(String name, Integer bestBeforeTime, Integer price) {
         this.name = name;
