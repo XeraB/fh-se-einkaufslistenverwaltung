@@ -468,16 +468,11 @@
 	"variable": [
 		{
 			"key": "route",
-			"value": "http://localhost:3000/einkaufslistenverwaltung"
-		},
-		{
-			"key": "extra",
-			"value": "http://test-sweng-sweng-team02-einkaufslistenverwaltung.wi-k8s.fh-muenster.de",
-			"type": "string"
+			"value": "http://test-sweng-sweng-team02-einkaufslistenverwaltung.wi-k8s.fh-muenster.de"
 		},
 		{
 			"key": "token",
-			"value": "",
+			"value": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0MUB0ZXN0LmNvbSIsImF1dGgiOiJBRE1JTiIsImlhdCI6MTY2MjY2ODMxNiwiZXhwIjozNjAwMTY2MjY2ODMxNn0.QyOrFdCMT8UuBJEHaWNZPCwJePaMayt-kZkPy4R72uVJN5SX2YoG05wEP9JiyWA_Cjgd9rAOxHfiFXQXVsBrZ1PIgMjpEjEF9Sbg6GuVxU8PBRTwbWV-u7a5OmBzjRGe1Y_ODc_5UjiAgi1TKaHJYqxeMjr0hm1SkhZQYxPgIwbebfuLcLTHYrGjuW984zuhnaz-rZKt6u1p5Qq6MMh94HNdd1n9NfK3wT9voIQgGEuuT65hZ3y2QchmW6Z8PTwEkaFGpYGJllmJkkMK5aqLVnYXrZlDHbEXIrBUkmWg2RH7zsKBoy-fThfDEruZ6jdbf3KvMxxmbWtwhN4cF7Tl4A",
 			"type": "string"
 		}
 	]
