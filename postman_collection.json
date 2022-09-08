@@ -262,7 +262,7 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"pm.test(\"Body is true\", function () {\r",
-									"  pm.response.to.have.body('true');\r",
+									"  pm.response.to.have.body('{\"productId\":5,\"shoppingListId\":1,\"amount\":3,\"name\":\"Ananas\",\"bestBeforeTime\":2,\"price\":5}' );\r",
 									"});"
 								],
 								"type": "text/javascript"
