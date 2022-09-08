@@ -403,53 +403,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Move entry to food Service",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"productId\": 4,\r\n    \"amount\": 2\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{route}}/rest/shoppingList/food",
-							"host": [
-								"{{route}}"
-							],
-							"path": [
-								"rest",
-								"shoppingList",
-								"food"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -519,7 +472,7 @@
 		},
 		{
 			"key": "extra",
-			"value": "",
+			"value": "http://test-sweng-sweng-team02-einkaufslistenverwaltung.wi-k8s.fh-muenster.de",
 			"type": "string"
 		},
 		{
