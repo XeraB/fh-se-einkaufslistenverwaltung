@@ -6,6 +6,7 @@ import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,15 +25,14 @@ public class ShoppingListController implements ShoppingListControllerApi {
         this.shoppingListService = shoppingListService;
         this.jwtValidator = jwtValidator;
     }
-
-    @Override
+    
     public void addUserToNewOrExistingList(@RequestHeader String Authorization, @RequestBody(required = false) String inviteCode) {
         String userEmail = jwtValidator.getUserEmail(Authorization.substring(7));
         if (inviteCode != null) {
             LOGGER.info("POST-Request for User {} with InviteCode {} received.", userEmail, inviteCode);
             this.shoppingListService.addUserToShoppingList(userEmail, inviteCode);
         } else {
-            LOGGER.info("POST-Request for User {} with InviteCode {} received.", userEmail);
+            LOGGER.info("POST-Request for User {} received.", userEmail);
             this.shoppingListService.addUserWithNewShoppingList(userEmail);
         }
     }
@@ -61,10 +61,10 @@ public class ShoppingListController implements ShoppingListControllerApi {
         this.shoppingListService.deleteProductFromListAndSendFoodClient(userEmail, entryDto);
     }
 
-    public void deleteProductFromList(@RequestHeader String Authorization, @RequestBody EntryDto entryDto) {
+    public void deleteProductFromList(@RequestHeader String Authorization, @PathVariable Integer productId) {
         String userEmail = jwtValidator.getUserEmail(Authorization.substring(7));
-        LOGGER.info("DELETE-Request of ShoppingListProduct for User {} and Product {} received.", userEmail, entryDto.getProductId());
-        this.shoppingListService.deleteProductFromList(userEmail, entryDto);
+        LOGGER.info("DELETE-Request of ShoppingListProduct for User {} and Product {} received.", userEmail, productId);
+        this.shoppingListService.deleteProductFromList(userEmail, productId);
     }
 
     public void deleteShoppingList(@RequestHeader String Authorization) {

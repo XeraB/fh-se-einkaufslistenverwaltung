@@ -84,7 +84,7 @@ public interface ShoppingListControllerApi {
     @Operation(summary = "Delete an entry from the shopping list and add the entry to fridge/stock")
     void deleteProductFromListAndSendFoodClient(@RequestHeader String Authorization, @RequestBody EntryDto entryDto);
 
-    @DeleteMapping("/entry")
+    @DeleteMapping("/entry/{productId}")
     @PreAuthorize(userRole)
     @Operation(summary = "Delete an entry from a shopping list",
             responses = {
@@ -98,7 +98,7 @@ public interface ShoppingListControllerApi {
                             responseCode = "404"
                     )
             })
-    void deleteProductFromList(@RequestHeader String Authorization, @RequestBody EntryDto entryDto);
+    void deleteProductFromList(@RequestHeader String Authorization, @PathVariable Integer productId);
 
     @DeleteMapping("/")
     @PreAuthorize(userRole)

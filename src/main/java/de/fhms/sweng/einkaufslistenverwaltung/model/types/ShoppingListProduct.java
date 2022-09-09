@@ -26,6 +26,8 @@ public class ShoppingListProduct {
 
     private int amount;
 
+    private Unit unit;
+
     @Version
     private long version;
 

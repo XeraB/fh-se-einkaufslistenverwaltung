@@ -151,6 +151,11 @@ public class ShoppingListService {
             if (productOptional.isPresent()) {
                 Product product = productOptional.get();
                 ShoppingListProduct shoppingListProduct = new ShoppingListProduct(product, shoppingList, entryDto.getAmount());
+                if (entryDto.getUnit() != null) {
+                    shoppingListProduct.setUnit(entryDto.getUnit());
+                } else {
+                    shoppingListProduct.setUnit(Unit.STUECK);
+                }
                 shoppingListProductRepository.save(shoppingListProduct);
                 return new ShoppingListProductDto(shoppingListProduct);
             } else {
@@ -193,18 +198,18 @@ public class ShoppingListService {
      * Deletes a product from a shopping list
      *
      * @param userEmail of the current user
-     * @param entryDto
+     * @param productId
      */
     @Transactional
-    public void deleteProductFromList(String userEmail, EntryDto entryDto) {
-        LOGGER.info("Execute deleteProductFromList({}, {}).", userEmail, entryDto.getProductId());
+    public void deleteProductFromList(String userEmail, Integer productId) {
+        LOGGER.info("Execute deleteProductFromList({}, {}).", userEmail, productId);
         User user = userRepository.findByEmail(userEmail);
         Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findByUsers_id(user.getId());
         if (shoppingListOptional.isPresent()) {
             ShoppingList shoppingList = shoppingListOptional.get();
             Set<ShoppingListProduct> shoppingListProducts = shoppingListProductRepository.findAllByShoppingList_Id(shoppingList.getId());
             for (ShoppingListProduct i : shoppingListProducts) {
-                if (i.getProduct().getId().equals(entryDto.getProductId())) {
+                if (i.getProduct().getId().equals(productId)) {
                     shoppingListProductRepository.delete(i);
                     return;
                 }
@@ -226,7 +231,7 @@ public class ShoppingListService {
     public void deleteProductFromListAndSendFoodClient(String userEmail, EntryDto entryDto) {
         Boolean result = addFoodEntry(entryDto);
         if (result) {
-            deleteProductFromList(userEmail, entryDto);
+            deleteProductFromList(userEmail, entryDto.getProductId());
         } else {
             throw new RuntimeException("Product could not be added to Fridge/stock");
         }

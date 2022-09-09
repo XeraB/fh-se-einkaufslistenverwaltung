@@ -71,6 +71,7 @@ public class ShoppingListServiceTest {
     private static final Integer TEST_PRICE = 4;
     private static final Integer TEST_AMOUNT = 4;
     private static final Integer TEST_AMOUNTNEW = 5;
+    private static final Unit TEST_UNIT = Unit.STUECK;
 
     @BeforeEach
     void setUp() {
@@ -82,7 +83,7 @@ public class ShoppingListServiceTest {
         this.product.setId(TEST_ID);
         this.shoppingListProduct = new ShoppingListProduct(this.product, this.shoppingList, TEST_AMOUNT);
         this.entries = new HashSet<ShoppingListProduct>();
-        this.entryDto = new EntryDto(TEST_ID, TEST_AMOUNT);
+        this.entryDto = new EntryDto(TEST_ID, TEST_AMOUNT, TEST_UNIT);
     }
 
     @Test
@@ -152,7 +153,7 @@ public class ShoppingListServiceTest {
         entries.add(shoppingListProduct);
 
         Assertions.assertThrows(AlreadyExistException.class, () -> {
-            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT, TEST_UNIT));
         });
     }
 
@@ -164,7 +165,7 @@ public class ShoppingListServiceTest {
         given(productRepository.findById(TEST_ID)).willReturn(Optional.of(product));
         assertFalse(shoppingListService.getAllProductsFromShoppingList(TEST_USERMAIL).contains(shoppingListProduct));
 
-        ShoppingListProductDto result = shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+        ShoppingListProductDto result = shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT, TEST_UNIT));
         assertTrue(result != null);
     }
 
@@ -175,7 +176,7 @@ public class ShoppingListServiceTest {
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT, TEST_UNIT));
         });
     }
 
@@ -184,7 +185,7 @@ public class ShoppingListServiceTest {
         given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT));
+            shoppingListService.addProductToList(TEST_USERMAIL, new EntryDto(TEST_ID, TEST_AMOUNT, TEST_UNIT));
         });
     }
 
@@ -244,7 +245,7 @@ public class ShoppingListServiceTest {
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         entries.add(shoppingListProduct);
-        shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
+        shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto.getProductId());
         Mockito.verify(shoppingListProductRepository, times(1)).delete(shoppingListProduct);
     }
 
@@ -254,7 +255,7 @@ public class ShoppingListServiceTest {
         given(shoppingListRepository.findByUsers_id(TEST_USERID)).willReturn(Optional.of(shoppingList));
         given(shoppingListProductRepository.findAllByShoppingList_Id(TEST_LISTID)).willReturn(entries);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
+            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto.getProductId());
         });
     }
 
@@ -262,7 +263,7 @@ public class ShoppingListServiceTest {
     public void deleteProductFromListExceptionNoShoppingList() {
         given(userRepository.findByEmail(TEST_USERMAIL)).willReturn(user);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto);
+            shoppingListService.deleteProductFromList(TEST_USERMAIL, entryDto.getProductId());
         });
     }
 
