@@ -262,7 +262,7 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"pm.test(\"Body is true\", function () {\r",
-									"  pm.response.to.have.body('{\"productId\":5,\"shoppingListId\":1,\"amount\":3,\"name\":\"Ananas\",\"bestBeforeTime\":2,\"price\":5}' );\r",
+									"  pm.response.to.have.body('{\"productId\":5,\"shoppingListId\":1,\"amount\":3, \"unit\":\"STUECK\", \"name\":\"Ananas\",\"bestBeforeTime\":2,\"price\":5}' );\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -381,24 +381,16 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"productId\": 1,\r\n    \"amount\": 0\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{route}}/rest/shoppingList/entry",
+							"raw": "{{route}}/rest/shoppingList/entry/1",
 							"host": [
 								"{{route}}"
 							],
 							"path": [
 								"rest",
 								"shoppingList",
-								"entry"
+								"entry",
+								"1"
 							]
 						}
 					},
