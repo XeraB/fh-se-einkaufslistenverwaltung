@@ -7,6 +7,7 @@ import de.fhms.sweng.einkaufslistenverwaltung.inbound.security.JwtValidator;
 import de.fhms.sweng.einkaufslistenverwaltung.inbound.types.EntryDto;
 import de.fhms.sweng.einkaufslistenverwaltung.model.ShoppingListService;
 import de.fhms.sweng.einkaufslistenverwaltung.model.types.Role;
+import de.fhms.sweng.einkaufslistenverwaltung.model.types.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -84,7 +85,7 @@ public class ShoppingListControllerTest {
     @Test
     public void getAllProductsFromShoppingListByUserId() throws Exception {
         Set<ShoppingListProductDto> entries = new HashSet<>();
-        entries.add(new ShoppingListProductDto(1, 1, 3, "Brot", 4, 2));
+        entries.add(new ShoppingListProductDto(1, 1, 3, Unit.STUECK, "Brot", 4, 2));
         given(this.shoppingListService.getAllProductsFromShoppingList("test1@test.com")).willReturn(entries);
         this.mvc.perform(get("/rest/shoppingList/all")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,8 +96,8 @@ public class ShoppingListControllerTest {
 
     @Test
     public void addProductToListByUser() throws Exception {
-        EntryDto entryDto = new EntryDto(1, 2);
-        ShoppingListProductDto entry = new ShoppingListProductDto(1, 1, 2, "Brot", 4, 2);
+        EntryDto entryDto = new EntryDto(1, 2, Unit.STUECK);
+        ShoppingListProductDto entry = new ShoppingListProductDto(1, 1, 2, Unit.STUECK, "Brot", 4, 2);
         given(this.shoppingListService.addProductToList(TEST_USER_EMAIL, entryDto)).willReturn(entry);
         this.mvc.perform(post("/rest/shoppingList/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +109,7 @@ public class ShoppingListControllerTest {
 
     @Test
     public void updateAmount() throws Exception {
-        ShoppingListProductDto entry = new ShoppingListProductDto(1, 1, 2, "Brot", 4, 2);
+        ShoppingListProductDto entry = new ShoppingListProductDto(1, 1, 2, Unit.STUECK, "Brot", 4, 2);
         given(this.shoppingListService.updateAmount(TEST_USER_EMAIL, 1, 2)).willReturn(entry);
         this.mvc.perform(put("/rest/shoppingList/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,7 +121,7 @@ public class ShoppingListControllerTest {
 
     @Test
     public void deleteProductFromListAndSendFoodClient() throws Exception {
-        EntryDto entryDto = new EntryDto(1, 3);
+        EntryDto entryDto = new EntryDto(1, 3, Unit.STUECK);
         this.mvc.perform(delete("/rest/shoppingList/food")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(entryDto))
@@ -131,10 +132,7 @@ public class ShoppingListControllerTest {
 
     @Test
     public void deleteProductFromList() throws Exception {
-        EntryDto entryDto = new EntryDto(1, 2);
-        this.mvc.perform(delete("/rest/shoppingList/entry")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(entryDto))
+        this.mvc.perform(delete("/rest/shoppingList/entry/1")
                         .header("Authorization", this.AUTH_HEADER))
                 .andDo(print())
                 .andExpect(status().isOk());
