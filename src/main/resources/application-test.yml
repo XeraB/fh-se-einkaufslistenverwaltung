@@ -43,14 +43,14 @@ spring:
           environment:
             spring:
               rabbitmq:
-                host: sparrow-01.rmq.cloudamqp.com
+                host: hase.mens.de
                 port: 5672
-                username: hnafxwho
-                password: qWdpOaHV48Rsi6hKGYS6PuE5lMXcxCUF
-                virtual-host: hnafxwho
-  #rabbitmq Daten zur Durchführung der Health Checks
+                username: a
+                password: Aith4Aep
+                virtual-host: /
+                #rabbitmq Daten zur Durchführung der Health Checks
   rabbitmq:
-    host: sparrow-01.rmq.cloudamqp.com
-    username: hnafxwho
-    password: qWdpOaHV48Rsi6hKGYS6PuE5lMXcxCUF
-    virtual-host: hnafxwho
+    host: hase.mens.de
+    username: a
+    password: Aith4Aep
+    virtual-host: /
