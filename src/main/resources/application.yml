@@ -51,6 +51,6 @@ spring:
   #rabbitmq Daten zur Durchführung der Health Checks
   rabbitmq:
     host: sparrow-01.rmq.cloudamqp.com
-    port: 5672
     username: hnafxwho
+    password: qWdpOaHV48Rsi6hKGYS6PuE5lMXcxCUF
     virtual-host: hnafxwho
